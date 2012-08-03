@@ -22,44 +22,21 @@ import net.wimpi.modbus.msg.ReadInputDiscretesRequest;
 import net.wimpi.modbus.msg.ReadInputDiscretesResponse;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
+import org.apache.camel.Processor;
 import org.apache.camel.RuntimeCamelException;
-import org.apache.camel.impl.PollingConsumerSupport;
+import org.apache.camel.impl.DefaultScheduledPollConsumer;
 
 /**
  *
  * @author Steven Swor
  */
-public class JamodPollingConsumer extends PollingConsumerSupport {
+public class JamodPollingConsumer extends DefaultScheduledPollConsumer {
 
     private final JamodEndpoint endpoint;
 
-    public JamodPollingConsumer(final JamodEndpoint endpoint) {
-        super(endpoint);
+    public JamodPollingConsumer(final JamodEndpoint endpoint, final Processor processor) {
+        super(endpoint, processor);
         this.endpoint = endpoint;
-    }
-
-    @Override
-    protected void doStart() throws Exception {
-        
-    }
-
-    @Override
-    protected void doStop() throws Exception {
-        
-    }
-    
-    
-
-    public Exchange receive() {
-        return doReceive(-1);
-    }
-
-    public Exchange receive(long timeout) {
-        return doReceive((int) timeout);
-    }
-
-    public Exchange receiveNoWait() {
-        return doReceive(-1);
     }
 
     protected Exchange doReceive(int timeout) {
@@ -80,6 +57,17 @@ public class JamodPollingConsumer extends PollingConsumerSupport {
             return exchange;
         } catch (ModbusException ex) {
             throw new RuntimeCamelException(ex);
+        }
+    }
+
+    @Override
+    protected int poll() throws Exception {
+        Exchange exchange = doReceive(1000);
+        if (exchange==null) {
+            return 0;
+        }else{
+            getProcessor().process(exchange);
+            return 1;
         }
     }
 }

@@ -47,8 +47,8 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
     }
 
     @Override
-    public PollingConsumer createPollingConsumer() throws Exception {
-        return new JamodPollingConsumer(this);
+    public Consumer createConsumer(final Processor processor) throws Exception {
+        return new JamodPollingConsumer(this, processor);
     }
 
     @Override
