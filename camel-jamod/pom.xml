@@ -139,7 +139,6 @@
                 <version>0.7</version>
                 <configuration>
                     <message>Creating site for ${project.version}</message>
-                    <path>camel-jamod</path>
                     <merge>true</merge>
                 </configuration>
                 <executions>
