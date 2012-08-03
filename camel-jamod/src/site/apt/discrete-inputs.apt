@@ -1,0 +1,28 @@
+Discrete Inputs
+
+    Camel-jamod implements a polling consumer for reading the status of discrete
+    inputs.  Each time the device is polled, the consumer will send the
+    resulting BitVector to the Camel route.
+
+* URI Format
+
++------------------------------------------------------------------------------+
+ jamod:tcp://host:port[?options]
++------------------------------------------------------------------------------+
+
+* Options
+
+*--------------------*-----------*---------------------------------------------*
+|<<Property>>        |<<Default>>|<<Description>>                              |
+*--------------------+-----+---------------------------------------------------+
+| referenceAddress   | 0   | The reference offset for the input register       |
+*--------------------+-----+---------------------------------------------------+
+| discreteInputCount | 0   | The number of discrete inputs to read.  This      |
+|                    |     | determines the size of the BitVector              |
+*--------------------+-----+---------------------------------------------------+
+| initialDelay       | 500 | The delay (in milliseconds) between when the      |
+|                    |     | endpoint is started and when the first polling    |
+|                    |     | occurs                                            |
+*--------------------+-----+---------------------------------------------------+
+| delay              | 500 | The Modbus polling interval (in milliseconds)     |
+*--------------------*-----*---------------------------------------------------*
