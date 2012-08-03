@@ -33,12 +33,36 @@ import org.apache.camel.impl.DefaultScheduledPollConsumer;
 public class JamodPollingConsumer extends DefaultScheduledPollConsumer {
 
     private final JamodEndpoint endpoint;
+    
+    private int referenceAddress;
+    
+    private int discreteInputCount;
 
     public JamodPollingConsumer(final JamodEndpoint endpoint, final Processor processor) {
         super(endpoint, processor);
         this.endpoint = endpoint;
+        this.referenceAddress = endpoint.getReferenceAddress();
+        this.discreteInputCount = endpoint.getDiscreteInputCount();
+        setDelay(endpoint.getDelay());
+        setInitialDelay(endpoint.getInitialDelay());
     }
 
+    public int getDiscreteInputCount() {
+        return discreteInputCount;
+    }
+
+    public void setDiscreteInputCount(int discreteInputCount) {
+        this.discreteInputCount = discreteInputCount;
+    }
+
+    public int getReferenceAddress() {
+        return referenceAddress;
+    }
+
+    public void setReferenceAddress(int referenceAddress) {
+        this.referenceAddress = referenceAddress;
+    }
+    
     protected Exchange doReceive(int timeout) {
         Exchange exchange = endpoint.createExchange();
         try {
@@ -47,12 +71,12 @@ public class JamodPollingConsumer extends DefaultScheduledPollConsumer {
                 connectionWrapper.setTimeout(timeout);
             }
             //create a transaction and execute
-            ReadInputDiscretesRequest request = new ReadInputDiscretesRequest();
+            ReadInputDiscretesRequest request = new ReadInputDiscretesRequest(getReferenceAddress(), getDiscreteInputCount());
             ModbusTransaction transaction = connectionWrapper.createTransaction();
             transaction.setRequest(request);
             transaction.execute();
             ReadInputDiscretesResponse response = (ReadInputDiscretesResponse) transaction.getResponse();
-            Message message = exchange.getOut();
+            Message message = exchange.getIn();
             message.setBody(response.getDiscretes());
             return exchange;
         } catch (ModbusException ex) {

@@ -42,8 +42,16 @@ public class JamodComponent extends DefaultComponent{
         /*
          * TODO resolve jamod configuration parameters
          */
+        Integer referenceAddress = getAndRemoveParameter(jamodParameters, "referenceAddress", Integer.class, Integer.valueOf(0));
+        Integer discreteInputCount = getAndRemoveParameter(jamodParameters, "discreteInputCount", Integer.class, Integer.valueOf(0));
+        Integer initialDelay = getAndRemoveParameter(jamodParameters, "initialDelay", Integer.class, Integer.valueOf(500));
+        Integer delay = getAndRemoveParameter(jamodParameters, "delay", Integer.class, Integer.valueOf(500));
         URI endpointUri = URISupport.createRemainingURI(new URI(addressUri), CastUtils.cast(jamodParameters));
         JamodEndpoint endpoint = new JamodEndpoint(endpointUri);
+        endpoint.setDiscreteInputCount(discreteInputCount);
+        endpoint.setReferenceAddress(referenceAddress);
+        endpoint.setInitialDelay(initialDelay);
+        endpoint.setDelay(delay);
         return endpoint;
     }
 

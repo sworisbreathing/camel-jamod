@@ -38,8 +38,48 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
     
     private URI modbusURI;
     
+    private int referenceAddress;
+    
+    private int discreteInputCount;
+    
+    private int initialDelay;
+    
+    private int delay;
+    
     public JamodEndpoint(final URI modbusURI) {
         this.modbusURI = modbusURI;
+    }
+
+    public int getDiscreteInputCount() {
+        return discreteInputCount;
+    }
+
+    public void setDiscreteInputCount(int discreteInputCount) {
+        this.discreteInputCount = discreteInputCount;
+    }
+
+    public int getReferenceAddress() {
+        return referenceAddress;
+    }
+
+    public void setReferenceAddress(int referenceAddress) {
+        this.referenceAddress = referenceAddress;
+    }
+
+    public int getDelay() {
+        return delay;
+    }
+
+    public void setDelay(int delay) {
+        this.delay = delay;
+    }
+
+    public int getInitialDelay() {
+        return initialDelay;
+    }
+
+    public void setInitialDelay(int initialDelay) {
+        this.initialDelay = initialDelay;
     }
 
     public Producer createProducer() throws Exception {
@@ -58,7 +98,16 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
 
     @Override
     protected String createEndpointUri() {
-        return modbusURI.toString();
+        StringBuilder sb = new StringBuilder(modbusURI.toString()).append("?");
+        sb.append("initialDelay=").append(getInitialDelay());
+        sb.append("&");
+        sb.append("delay=").append(getDelay());
+        sb.append("&");
+        sb.append("referenceAddress=").append(getReferenceAddress());
+        sb.append("&");
+        sb.append("discreteInputCount=").append(getDiscreteInputCount());
+        
+        return sb.toString();
     }
     
     public AbstractMasterConnectionWrapper getConnection() {

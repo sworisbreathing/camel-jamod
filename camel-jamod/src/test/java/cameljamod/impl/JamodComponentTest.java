@@ -15,11 +15,7 @@
  */
 package cameljamod.impl;
 
-import java.net.InetAddress;
-import net.wimpi.modbus.Modbus;
-import net.wimpi.modbus.ModbusCoupler;
 import net.wimpi.modbus.net.ModbusTCPListener;
-import net.wimpi.modbus.procimg.SimpleDigitalIn;
 import net.wimpi.modbus.procimg.SimpleProcessImage;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
@@ -34,14 +30,12 @@ public class JamodComponentTest extends CamelTestSupport {
 
     private ModbusTCPListener listener;
     private SimpleProcessImage spi;
-    
     private volatile JamodComponent instance = null;
-    
     private static volatile String port = null;
-    
+
     protected static String getPort() {
         if (port == null) {
-            synchronized(JamodComponentTest.class) {
+            synchronized (JamodComponentTest.class) {
                 if (port == null) {
                     //port = TestUtilities.getTestProperty("tcp.port", String.valueOf(Modbus.DEFAULT_PORT));
                     //port = String.valueOf(Modbus.DEFAULT_PORT);
@@ -65,7 +59,7 @@ public class JamodComponentTest extends CamelTestSupport {
 //        listener.setPort(Integer.parseInt(getPort()));
 //        listener.start();
 //        Thread.sleep(1000);
-        super.setUp();        
+        super.setUp();
     }
 
     @Override
@@ -73,10 +67,10 @@ public class JamodComponentTest extends CamelTestSupport {
         super.tearDown();
 //        listener.stop();
     }
-    
+
     protected JamodComponent getInstance() {
-        if (instance==null) {
-            synchronized(this) {
+        if (instance == null) {
+            synchronized (this) {
                 if (instance == null) {
                     instance = new JamodComponent();
                 }
@@ -84,7 +78,7 @@ public class JamodComponentTest extends CamelTestSupport {
         }
         return instance;
     }
-    
+
     @Override
     protected CamelContext createCamelContext() throws Exception {
         CamelContext result = super.createCamelContext();
@@ -93,28 +87,19 @@ public class JamodComponentTest extends CamelTestSupport {
         c.setCamelContext(result);
         return result;
     }
-    
+
     @Override
     protected RouteBuilder createRouteBuilder() {
         return new RouteBuilder() {
 
             public void configure() {
-                from("jamod:tcp://localhost:" + getPort()).to("log:cameljamod.impl.JamodComponent");
+                from("jamod:tcp://localhost:" + getPort() + "?referenceAddress=0&discreteInputCount=8&delay=100&initialDelay=100").to("log:cameljamod.impl.JamodComponent");
             }
         };
     }
-
-    /**
-     * Test of createEndpoint method, of class JamodComponent.
-     */
+    
     @Test
-    public void testCreateEndpoint() throws Exception {
-        log.debug("Creating endpoint");
-        JamodEndpoint endpoint = (JamodEndpoint) getInstance().createEndpoint("jamod:tcp://localhost:" + getPort());
-        log.debug("Starting endpoint");
-        endpoint.start();
+    public void testCamelComponent() throws Exception {
         Thread.sleep(5000);
-        log.debug("Stopping endpoint");
-        endpoint.stop();
     }
 }
