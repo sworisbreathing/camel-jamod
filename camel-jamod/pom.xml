@@ -14,10 +14,17 @@
         defining endpoints to Modbus devices through the use of Jamod, a 100%
         Java library implementation of the Modbus protocol.
     </description>
+    
+    <scm>
+        <url>https://github.com/sworisbreathing/camel-jamod</url>
+        <connection>scm:git:git://github.com/sworisbreathing/camel-jamod.git</connection>
+        <developerConnection>scm:git:git@github.com:sworisbreathing/camel-jamod.git</developerConnection>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <camel.version>2.9.2</camel.version>
+        <github.global.server>github</github.global.server>
     </properties>
 
     <dependencies>
@@ -123,6 +130,24 @@
                         </plugin>
                     </reportPlugins>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.6</version>
+                <configuration>
+                    <message>Creating site for ${project.version}</message>
+                    <path>camel-jamod</path>
+                    <merge>true</merge>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>site</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
