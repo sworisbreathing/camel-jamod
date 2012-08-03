@@ -7,8 +7,20 @@ Discrete Inputs
 * URI Format
 
 +------------------------------------------------------------------------------+
- jamod:tcp://host:port[?options]
+ jamod:<protocol>://host[:port][?options]
 +------------------------------------------------------------------------------+
+
+* Protocols
+
+*--------------*---------------------------------------------------------------*
+| <<Protocol>> | <<Description>>                                               |
+*--------------+---------------------------------------------------------------+
+| tcp          | Uses the TCP/IP transport                                     |
+*--------------+---------------------------------------------------------------+
+| udp          | Uses the UDP transport.  <<Note:>> This is not an official    |
+|              | Modbus specification.  It is a proof of concept offered by the|
+|              | authors of Jamod.                                             |
+*--------------*---------------------------------------------------------------*
 
 * Options
 
