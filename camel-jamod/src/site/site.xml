@@ -20,11 +20,11 @@
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xmlns='http://maven.apache.org/DECORATION/1.1.0'
          xsi:schemaLocation='http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd'>
-    <!--<skin>
+    <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
         <version>1.2.2</version>
-    </skin>-->
+    </skin>
     <version position="right" />
     <body>
         <menu name="Reading Modbus Data">
