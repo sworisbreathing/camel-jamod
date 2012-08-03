@@ -113,7 +113,7 @@ public class JamodComponentTest extends CamelTestSupport {
         JamodEndpoint endpoint = (JamodEndpoint) getInstance().createEndpoint("jamod:tcp://localhost:" + getPort());
         log.debug("Starting endpoint");
         endpoint.start();
-        Thread.sleep(10000);
+        Thread.sleep(5000);
         log.debug("Stopping endpoint");
         endpoint.stop();
     }
