@@ -1,2 +1,5 @@
 /jamod-osgi/target/
 /camel-jamod/target/
+camel-jamod/nbactions.xml
+
+jamod-osgi/nbactions.xml
