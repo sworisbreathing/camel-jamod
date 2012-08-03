@@ -34,7 +34,7 @@ import org.apache.camel.impl.DefaultPollingEndpoint;
  */
 public class JamodEndpoint extends DefaultPollingEndpoint {
     
-    private AbstractMasterConnectionWrapper conn;
+    private volatile AbstractMasterConnectionWrapper conn;
     
     private URI modbusURI;
     
@@ -63,9 +63,19 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
     
     public AbstractMasterConnectionWrapper getConnection() {
         if (conn == null) {
-            conn = createConnection();
+            synchronized(this) {
+                if (conn == null) {
+                    conn = createConnection();
+                }
+            }
         }
         return conn;
+    }
+
+    @Override
+    protected void doStop() throws Exception {
+        super.doStop();
+        getConnection().close();
     }
     
     protected AbstractMasterConnectionWrapper createConnection() {
