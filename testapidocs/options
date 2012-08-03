@@ -17,6 +17,10 @@
 -doctitle
 'camel-jamod OSGi Bundle 1.0-SNAPSHOT Test API'
 -link
+'http://jamod.sourceforge.net/apidocs'
+-link
+'http://camel.apache.org/maven/current/camel-core/apidocs'
+-link
 '../apidocs'
 -linkoffline
 'http://download.oracle.com/javase/6/docs/api' '/Volumes/Development/Git/camel-jamod/camel-jamod/target/javadoc-bundle-options'
