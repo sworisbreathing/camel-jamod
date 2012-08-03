@@ -21,16 +21,17 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- *
+ * Utility methods for testing.
+ * 
  * @author Steven Swor
  */
 public class TestUtilities {
 
     /**
-     * Gets the MySQL port.
+     * Gets a test property from the test properties file.
      *
-     * @param defaultResult the default port
-     * @return the MySQL port from a mysql.properties file, or the default value
+     * @param defaultResult the default value
+     * @return the property from a test.properties file, or the default value
      */
     public static String getTestProperty(String propertyName, String defaultResult) {
         String results;

@@ -27,17 +27,31 @@ import org.apache.camel.RuntimeCamelException;
 import org.apache.camel.impl.DefaultScheduledPollConsumer;
 
 /**
- *
+ * A Camel consumer which polls a Modbus device for its discrete inputs.
  * @author Steven Swor
  */
 public class JamodPollingConsumer extends DefaultScheduledPollConsumer {
-
+    
+    /**
+     * The endpoint.
+     */
     private final JamodEndpoint endpoint;
     
+    /**
+     * The reference address of the first discrete input.
+     */
     private int referenceAddress;
     
+    /**
+     * The number of discrete inputs to read.
+     */
     private int discreteInputCount;
-
+    
+    /**
+     * Creates a new JamodPollingConsumer.
+     * @param endpoint the endpoint
+     * @param processor the processor
+     */
     public JamodPollingConsumer(final JamodEndpoint endpoint, final Processor processor) {
         super(endpoint, processor);
         this.endpoint = endpoint;
@@ -46,23 +60,45 @@ public class JamodPollingConsumer extends DefaultScheduledPollConsumer {
         setDelay(endpoint.getDelay());
         setInitialDelay(endpoint.getInitialDelay());
     }
-
+    
+    /**
+     * Gets the number of discrete inputs.
+     * @return the number of discrete inputs
+     */
     public int getDiscreteInputCount() {
         return discreteInputCount;
     }
 
+    /**
+     * Sets the number of discrete inputs.
+     * @param discreteInputCount the number of discrete inputs
+     */
     public void setDiscreteInputCount(int discreteInputCount) {
         this.discreteInputCount = discreteInputCount;
     }
 
+    /**
+     * Gets the reference address.
+     * @return the reference address
+     */
     public int getReferenceAddress() {
         return referenceAddress;
     }
 
+    /**
+     * Sets the reference address.
+     * @param referenceAddress the reference address
+     */
     public void setReferenceAddress(int referenceAddress) {
         this.referenceAddress = referenceAddress;
     }
     
+    /**
+     * Performs the polling operation.
+     * @param timeout the timeout value
+     * @return an {@link org.apache.camel.Exchange} whose input body is the {@link net.wimpi.modbus.util.BitVector}
+     * read from the Modbus device
+     */
     protected Exchange doReceive(int timeout) {
         Exchange exchange = endpoint.createExchange();
         try {

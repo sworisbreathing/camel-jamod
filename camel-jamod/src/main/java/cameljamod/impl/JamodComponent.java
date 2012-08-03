@@ -25,7 +25,7 @@ import org.apache.camel.util.URISupport;
 
 
 /**
- *
+ * Jamod component class.
  * @author Steven Swor
  */
 public class JamodComponent extends DefaultComponent{

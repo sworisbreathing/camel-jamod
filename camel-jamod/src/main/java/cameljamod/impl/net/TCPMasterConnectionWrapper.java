@@ -23,11 +23,12 @@ import net.wimpi.modbus.io.ModbusTransport;
 import net.wimpi.modbus.net.TCPMasterConnection;
 
 /**
- *
+ * Wraps a {@link net.wimpi.modbus.net.TCPMasterConnection}.
+ * 
  * @author Steven Swor
  */
 public class TCPMasterConnectionWrapper extends AbstractMasterConnectionWrapper<TCPMasterConnection> {
-
+    
     public TCPMasterConnectionWrapper(TCPMasterConnection masterConnection) {
         super(masterConnection);
     }

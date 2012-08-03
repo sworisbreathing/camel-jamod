@@ -20,10 +20,10 @@ import net.wimpi.modbus.procimg.SimpleProcessImage;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.test.CamelTestSupport;
-import org.junit.*;
+import org.junit.Test;
 
 /**
- *
+ * Unit tests for {@link JamodComponent}.
  * @author Steven Swor
  */
 public class JamodComponentTest extends CamelTestSupport {
@@ -33,6 +33,10 @@ public class JamodComponentTest extends CamelTestSupport {
     private volatile JamodComponent instance = null;
     private static volatile String port = null;
 
+    /**
+     * Gets the port.
+     * @return the port
+     */
     protected static String getPort() {
         if (port == null) {
             synchronized (JamodComponentTest.class) {
@@ -68,6 +72,10 @@ public class JamodComponentTest extends CamelTestSupport {
 //        listener.stop();
     }
 
+    /**
+     * Lazy-initializes the Jamod component.
+     * @return the Jamod component
+     */
     protected JamodComponent getInstance() {
         if (instance == null) {
             synchronized (this) {
@@ -98,6 +106,10 @@ public class JamodComponentTest extends CamelTestSupport {
         };
     }
     
+    /**
+     * Tests the component.
+     * @throws Exception if the test fails
+     */
     @Test
     public void testCamelComponent() throws Exception {
         Thread.sleep(5000);

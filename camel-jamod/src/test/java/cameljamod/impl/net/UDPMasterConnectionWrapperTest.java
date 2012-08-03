@@ -22,24 +22,35 @@ import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.net.ModbusUDPListener;
 import net.wimpi.modbus.net.UDPMasterConnection;
 import org.junit.AfterClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
- *
+ * Unit tests for {@link UDPMasterConnectionWrapper}.
+ * 
  * @author Steven Swor
  */
 @Ignore("Jamod UDP listener does not clean up threads when stopping")
 public class UDPMasterConnectionWrapperTest {
 
+    /**
+     * The modbus listener.
+     */
     private static ModbusUDPListener listener = null;
+    
+    /**
+     * The port.
+     */
     private static int port = Modbus.DEFAULT_PORT;
 
     public UDPMasterConnectionWrapperTest() {
     }
 
+    /**
+     * Sets up the modbus listener.
+     * @throws Exception if the modbus listener cannot be set up
+     */
     @BeforeClass
     public static void setUpClass() throws Exception {
         listener = new ModbusUDPListener(InetAddress.getLocalHost());
@@ -48,12 +59,20 @@ public class UDPMasterConnectionWrapperTest {
         listener.start();
     }
 
+    /**
+     * Stops the modbus listener.
+     * @throws Exception if the modbus listener cannot be stopped
+     */
     @AfterClass
     public static void tearDownClass() throws Exception {
         listener.stop();
         listener = null;
     }
 
+    /**
+     * Creates a new modbus connection.
+     * @return a new modbus connection
+     */
     protected static UDPMasterConnection createMockConnection() {
         try {
             UDPMasterConnection result = new UDPMasterConnection(InetAddress.getLocalHost());
@@ -65,7 +84,8 @@ public class UDPMasterConnectionWrapperTest {
     }
 
     /**
-     * Test of close method, of class UDPMasterConnectionWrapper.
+     * Tests {@link UDPMasterConnectionWrapper#connect()} and
+     * {@link UDPMasterConnectionWrapper#close()}.
      */
     @Test
     public void testConnectAndClose() throws Exception {
@@ -74,66 +94,4 @@ public class UDPMasterConnectionWrapperTest {
         connection.close();
     }
 
-    /**
-     * Test of getAddress method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testGetAddress() {
-    }
-
-    /**
-     * Test of getModbusTransport method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testGetModbusTransport() {
-    }
-
-    /**
-     * Test of getPort method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testGetPort() {
-    }
-
-    /**
-     * Test of getTimeout method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testGetTimeout() {
-    }
-
-    /**
-     * Test of isConnected method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testIsConnected() {
-    }
-
-    /**
-     * Test of setAddress method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testSetAddress() {
-    }
-
-    /**
-     * Test of setPort method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testSetPort() {
-    }
-
-    /**
-     * Test of setTimeout method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testSetTimeout() {
-    }
-
-    /**
-     * Test of createTransaction method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testCreateTransaction() {
-    }
 }

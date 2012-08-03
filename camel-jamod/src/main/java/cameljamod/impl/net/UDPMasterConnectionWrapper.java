@@ -23,7 +23,8 @@ import net.wimpi.modbus.io.ModbusUDPTransaction;
 import net.wimpi.modbus.net.UDPMasterConnection;
 
 /**
- *
+ * Wraps a {@link net.wimpi.modbus.net.UDPMasterConnection}.
+ * 
  * @author Steven Swor
  */
 public class UDPMasterConnectionWrapper extends AbstractMasterConnectionWrapper<UDPMasterConnection> {

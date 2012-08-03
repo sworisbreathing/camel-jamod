@@ -27,18 +27,30 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 
 /**
- *
+ * Unit tests for {@link TCPMasterConnectionWrapper}.
+ * 
  * @author Steven Swor
  */
 @Ignore("connection refused?")
 public class TCPMasterConnectionWrapperTest {
-
+    
+    /**
+     * The Modbus listener.
+     */
     private static ModbusTCPListener listener = null;
+    
+    /**
+     * The modbus port.
+     */
     private static int port = Modbus.DEFAULT_PORT;
 
     public TCPMasterConnectionWrapperTest() {
     }
 
+    /**
+     * Sets up the Modbus listener.
+     * @throws Exception if the listener cannot be set up
+     */
     @BeforeClass
     public static void setUpClass() throws Exception {
         listener = new ModbusTCPListener(1, InetAddress.getLocalHost());
@@ -47,12 +59,20 @@ public class TCPMasterConnectionWrapperTest {
         listener.start();
     }
 
+    /**
+     * Stops the modbus listener.
+     * @throws Exception if the listener cannot be stopped
+     */
     @AfterClass
     public static void tearDownClass() throws Exception {
         listener.stop();
         listener = null;
     }
 
+    /**
+     * Creates a new master connection.
+     * @return a new master connection
+     */
     protected static TCPMasterConnection createMockConnection() {
         try {
             TCPMasterConnection result = new TCPMasterConnection(InetAddress.getLocalHost());
@@ -65,7 +85,7 @@ public class TCPMasterConnectionWrapperTest {
     }
 
     /**
-     * Test of close method, of class UDPMasterConnectionWrapper.
+     * Tests {@link TCPMasterConnection#connect()} and {@link TCPMasterConnection#close()}.
      */
     @Test
     public void testConnectAndClose() throws Exception {
@@ -74,66 +94,4 @@ public class TCPMasterConnectionWrapperTest {
         connection.close();
     }
 
-    /**
-     * Test of getAddress method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testGetAddress() {
-    }
-
-    /**
-     * Test of getModbusTransport method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testGetModbusTransport() {
-    }
-
-    /**
-     * Test of getPort method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testGetPort() {
-    }
-
-    /**
-     * Test of getTimeout method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testGetTimeout() {
-    }
-
-    /**
-     * Test of isConnected method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testIsConnected() {
-    }
-
-    /**
-     * Test of setAddress method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testSetAddress() {
-    }
-
-    /**
-     * Test of setPort method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testSetPort() {
-    }
-
-    /**
-     * Test of setTimeout method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testSetTimeout() {
-    }
-
-    /**
-     * Test of createTransaction method, of class UDPMasterConnectionWrapper.
-     */
-    @Test
-    public void testCreateTransaction() {
-    }
 }
