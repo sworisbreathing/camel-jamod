@@ -15,6 +15,8 @@
         Java library implementation of the Modbus protocol.
     </description>
     
+    <url>https://github.com/sworisbreathing/camel-jamod</url>
+    
     <scm>
         <url>https://github.com/sworisbreathing/camel-jamod</url>
         <connection>scm:git:git://github.com/sworisbreathing/camel-jamod.git</connection>
@@ -134,7 +136,7 @@
             <plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
-                <version>0.6</version>
+                <version>0.7</version>
                 <configuration>
                     <message>Creating site for ${project.version}</message>
                     <path>camel-jamod</path>
