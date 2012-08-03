@@ -6,7 +6,7 @@
     <groupId>camel-jamod</groupId>
     <artifactId>camel-jamod</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <!--<packaging>bundle</packaging>-->
+    <packaging>bundle</packaging>
 
     <name>camel-jamod OSGi Bundle</name>
 
@@ -64,7 +64,7 @@
 
     <build>
         <plugins>
-            <!--<plugin>
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>2.2.0</version>
@@ -74,7 +74,7 @@
                         <Bundle-Activator>org.cameljamod.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>
-            </plugin>-->
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -87,12 +87,4 @@
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <url>http://repo1.maven.org/maven2/</url>
-            <id>junit_4</id>
-            <layout>default</layout>
-            <name>Repository for library Library[junit_4]</name>
-        </repository>
-    </repositories>
 </project>
