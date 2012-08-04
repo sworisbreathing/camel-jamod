@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package cameljamod.impl;
 
 import cameljamod.impl.net.AbstractMasterConnectionWrapper;
@@ -32,33 +31,31 @@ import org.apache.camel.impl.DefaultPollingEndpoint;
 
 /**
  * Endpoint for polling discrete inputs.
- * 
+ *
  * @author Steven Swor
  */
 public class JamodEndpoint extends DefaultPollingEndpoint {
-    
+
     /**
      * The connection.
      */
     private volatile AbstractMasterConnectionWrapper conn;
-    
     /**
      * The URI to the modbus device.
      */
     private URI modbusURI;
-    
     /**
      * The parameters.
      */
     private Map<String, Object> parameters;
-    
     /**
      * The component.
      */
     private final JamodComponent component;
-    
+
     /**
      * Creates a new JamodEndpoint.
+     *
      * @param modbusURI the URI of the modbus device.
      */
     public JamodEndpoint(final JamodComponent component, final URI modbusURI, final Map<String, Object> parameters) {
@@ -66,9 +63,10 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
         this.parameters = parameters;
         this.component = component;
     }
-    
+
     /**
      * Returns {@code null}.
+     *
      * @return {@code null}
      * @throws Exception never
      */
@@ -89,7 +87,17 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
             int count = component.getAndRemoveParameter(parameters, "count", Integer.class, Integer.valueOf(1));
             consumer.setCount(count);
             return consumer;
-        }else{
+        } else if ("coils".equalsIgnoreCase(dataType)) {
+            DiscreteOutputsPollingConsumer consumer = new DiscreteOutputsPollingConsumer(this, processor);
+            consumer.setReferenceAddress(JamodUriResolver.getReferenceFromUri(modbusURI));
+            int delay = component.getAndRemoveParameter(parameters, "delay", Integer.class, Integer.valueOf(500));
+            consumer.setDelay(delay);
+            int initialDelay = component.getAndRemoveParameter(parameters, "initialDelay", Integer.class, Integer.valueOf(500));
+            consumer.setInitialDelay(initialDelay);
+            int count = component.getAndRemoveParameter(parameters, "count", Integer.class, Integer.valueOf(1));
+            consumer.setCount(count);
+            return consumer;
+        } else {
             throw new IllegalArgumentException(MessageFormat.format("Unsupported data type: {0}", dataType));
         }
     }
@@ -109,13 +117,15 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
         StringBuilder sb = new StringBuilder(modbusURI.toString());
         return sb.toString();
     }
+
     /**
      * Gets the Modbus connection.
+     *
      * @return the connection
      */
     public AbstractMasterConnectionWrapper getConnection() {
         if (conn == null) {
-            synchronized(this) {
+            synchronized (this) {
                 if (conn == null) {
                     conn = createConnection();
                 }
@@ -129,9 +139,10 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
         super.doStop();
         getConnection().close();
     }
-    
+
     /**
      * Creates the Modbus connection.
+     *
      * @return the connection
      */
     protected AbstractMasterConnectionWrapper createConnection() {
@@ -139,40 +150,43 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
         InetAddress addr = resolveHostAddress(modbusURI);
         if (isTCP(modbusURI)) {
             result = new TCPMasterConnectionWrapper(createTCPMasterConnection(addr));
-        }else if (isUDP(modbusURI)) {
+        } else if (isUDP(modbusURI)) {
             result = new UDPMasterConnectionWrapper(createUDPMasterConnection(addr));
-        }else{
+        } else {
             throw new ResolveEndpointFailedException(modbusURI.toString());
         }
         int port = modbusURI.getPort();
-        if (port==-1) {
+        if (port == -1) {
             port = Modbus.DEFAULT_PORT;
         }
         result.setPort(port);
         result.setTimeout(1000);
         return result;
     }
-    
+
     /**
      * Creates a new TCP master connection.
+     *
      * @param addr the address of the modbus device
      * @return a new TCP master connection
      */
     protected TCPMasterConnection createTCPMasterConnection(final InetAddress addr) {
         return new TCPMasterConnection(addr);
     }
-    
+
     /**
      * Creates a new UDP master connection.
+     *
      * @param addr the address of the modbus device
      * @return a new UDP master connection
      */
     protected UDPMasterConnection createUDPMasterConnection(final InetAddress addr) {
         return new UDPMasterConnection(addr);
     }
-    
+
     /**
      * Determines if a URI represents a TCP connection.
+     *
      * @param uri the URI to check
      * @return {@code true} if the URI scheme is {@code tcp}, otherwise
      * {@code false}.
@@ -180,9 +194,10 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
     private static boolean isTCP(final URI uri) {
         return "tcp".equalsIgnoreCase(uri.getScheme());
     }
-    
+
     /**
      * Determines if a URI represents a UDP connection.
+     *
      * @param uri the URI to check
      * @return {@code true} if the URI scheme is {@code udp}, otherwise
      * {@code false}.
@@ -190,9 +205,10 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
     private static boolean isUDP(final URI uri) {
         return "udp".equalsIgnoreCase(uri.getScheme());
     }
-    
+
     /**
      * Resolves a modbus device's address from a URI.
+     *
      * @param uri the URI
      * @return an {@link java.net.InetAddress} for the URI's host
      */
