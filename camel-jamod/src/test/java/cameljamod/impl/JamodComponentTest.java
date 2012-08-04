@@ -27,6 +27,7 @@ import org.junit.Test;
  * Unit tests for {@link JamodComponent}.
  * @author Steven Swor
  */
+@Ignore
 public class JamodComponentTest extends CamelTestSupport {
 
     private ModbusTCPListener listener;
