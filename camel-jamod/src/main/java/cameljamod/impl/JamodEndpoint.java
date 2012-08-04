@@ -22,6 +22,8 @@ import cameljamod.impl.net.UDPMasterConnectionWrapper;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.text.MessageFormat;
+import java.util.Map;
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.net.TCPMasterConnection;
 import net.wimpi.modbus.net.UDPMasterConnection;
@@ -42,85 +44,24 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
      * The URI to the modbus device.
      */
     private URI modbusURI;
+    
     /**
-     * The reference address for the discrete inputs.
+     * The parameters.
      */
-    private int referenceAddress;
-    /**
-     * The number of discrete inputs to read.
-     */
-    private int discreteInputCount;
-    /**
-     * The initial delay before polling.
-     */
-    private int initialDelay;
-    /**
-     * The polling interval.
-     */
-    private int delay;
+    private Map<String, Object> parameters;
+    
+    private final JamodComponent component;
+    
     /**
      * Creates a new JamodEndpoint.
      * @param modbusURI the URI of the modbus device.
      */
-    public JamodEndpoint(final URI modbusURI) {
+    public JamodEndpoint(final JamodComponent component, final URI modbusURI, final Map<String, Object> parameters) {
         this.modbusURI = modbusURI;
+        this.parameters = parameters;
+        this.component = component;
     }
-    /**
-     * Gets the number of discrete inputs to be read.
-     * @return the number of discrete inputs to be read
-     */
-    public int getDiscreteInputCount() {
-        return discreteInputCount;
-    }
-    /**
-     * Sets the number of discrete inputs to be read.
-     * @param discreteInputCount the number of discrete inputs to be read
-     */
-    public void setDiscreteInputCount(int discreteInputCount) {
-        this.discreteInputCount = discreteInputCount;
-    }
-    /**
-     * Gets the reference address of the first discrete input.
-     * @return the reference address of the first discrete input
-     */
-    public int getReferenceAddress() {
-        return referenceAddress;
-    }
-    /**
-     * Sets the reference address of the first discrete input.
-     * @param referenceAddress the reference address of the first discrete input
-     */
-    public void setReferenceAddress(int referenceAddress) {
-        this.referenceAddress = referenceAddress;
-    }
-    /**
-     * Gets the polling interval (in milliseconds).
-     * @return the polling interval (in milliseconds)
-     */
-    public int getDelay() {
-        return delay;
-    }
-    /**
-     * Sets the polling interval (in milliseconds).
-     * @param delay the polling interval (in milliseconds)
-     */
-    public void setDelay(int delay) {
-        this.delay = delay;
-    }
-    /**
-     * Gets the delay before the first polling attempt.
-     * @return the delay before the first polling attempt
-     */
-    public int getInitialDelay() {
-        return initialDelay;
-    }
-    /**
-     * Sets the delay before the first polling attempt.
-     * @param initialDelay the delay before the first polling attempt
-     */
-    public void setInitialDelay(int initialDelay) {
-        this.initialDelay = initialDelay;
-    }
+    
     /**
      * Returns {@code null}.
      * @return {@code null}
@@ -132,7 +73,20 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
 
     @Override
     public Consumer createConsumer(final Processor processor) throws Exception {
-        return new DiscreteInputsPollingConsumer(this, processor);
+        String dataType = JamodUriResolver.getDataTypeFromUri(modbusURI);
+        if ("discreteInputs".equalsIgnoreCase(dataType)) {
+            DiscreteInputsPollingConsumer consumer = new DiscreteInputsPollingConsumer(this, processor);
+            consumer.setReferenceAddress(JamodUriResolver.getReferenceFromUri(modbusURI));
+            int delay = component.getAndRemoveParameter(parameters, "delay", Integer.class, Integer.valueOf(500));
+            consumer.setDelay(delay);
+            int initialDelay = component.getAndRemoveParameter(parameters, "initialDelay", Integer.class, Integer.valueOf(500));
+            consumer.setInitialDelay(initialDelay);
+            int count = component.getAndRemoveParameter(parameters, "count", Integer.class, Integer.valueOf(1));
+            consumer.setDiscreteInputCount(count);
+            return consumer;
+        }else{
+            throw new IllegalArgumentException(MessageFormat.format("Unsupported data type: {0}", dataType));
+        }
     }
 
     @Override
@@ -141,16 +95,15 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
     }
 
     @Override
+    public boolean isLenientProperties() {
+        return true;
+    }
+    
+    
+
+    @Override
     protected String createEndpointUri() {
-        StringBuilder sb = new StringBuilder(modbusURI.toString()).append("?");
-        sb.append("initialDelay=").append(getInitialDelay());
-        sb.append("&");
-        sb.append("delay=").append(getDelay());
-        sb.append("&");
-        sb.append("referenceAddress=").append(getReferenceAddress());
-        sb.append("&");
-        sb.append("discreteInputCount=").append(getDiscreteInputCount());
-        
+        StringBuilder sb = new StringBuilder(modbusURI.toString());
         return sb.toString();
     }
     /**

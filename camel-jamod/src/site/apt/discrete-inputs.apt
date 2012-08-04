@@ -7,7 +7,7 @@ Discrete Inputs
 * URI Format
 
 +------------------------------------------------------------------------------+
- jamod:<protocol>://host[:port][?options]
+ jamod:<protocol>://<host>[:port]/<dataType>/<referenceAddress>[?options]
 +------------------------------------------------------------------------------+
 
 * Protocols
@@ -22,14 +22,33 @@ Discrete Inputs
 |              | authors of Jamod.                                             |
 *--------------*---------------------------------------------------------------*
 
+* Data Types
+
+*----------------*----------------*--------------------------------------------*
+| <<Data Type>>  | <<Read/Write>> | <<Description>>                            |
+*----------------+----------------+--------------------------------------------*
+| discreteInputs | Read-Only      | Discrete inputs                            |
+*----------------+----------------+--------------------------------------------*
+| coils          | Read-Write     | Discrete outputs or coils                  |
+*----------------+----------------+--------------------------------------------+
+| inputRegisters | Read-Only      | Input registers, where each register holds |
+|                |                | a 16-bit word.                             |
+*----------------+----------------+--------------------------------------------+
+| registers      | Read-Write     | Holding registers, where each register     |
+|                |                | a 16-bit word.                             |
+*----------------+----------------+--------------------------------------------+
+
+* Reference Address
+
+    The reference address is the address offset of the first discrete input,
+coil, or register to be accessed.
+
 * Options
 
 *--------------------*-----------*---------------------------------------------*
 |<<Property>>        |<<Default>>|<<Description>>                              |
 *--------------------+-----+---------------------------------------------------+
-| referenceAddress   | 0   | The reference offset for the input register       |
-*--------------------+-----+---------------------------------------------------+
-| discreteInputCount | 0   | The number of discrete inputs to read.  This      |
+| count              | 0   | The number of discrete inputs to read.  This      |
 |                    |     | determines the size of the BitVector              |
 *--------------------+-----+---------------------------------------------------+
 | initialDelay       | 500 | The delay (in milliseconds) between when the      |

@@ -55,10 +55,6 @@ public class DiscreteInputsPollingConsumer extends DefaultScheduledPollConsumer 
     public DiscreteInputsPollingConsumer(final JamodEndpoint endpoint, final Processor processor) {
         super(endpoint, processor);
         this.endpoint = endpoint;
-        this.referenceAddress = endpoint.getReferenceAddress();
-        this.discreteInputCount = endpoint.getDiscreteInputCount();
-        setDelay(endpoint.getDelay());
-        setInitialDelay(endpoint.getInitialDelay());
     }
     
     /**

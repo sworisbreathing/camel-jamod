@@ -20,6 +20,7 @@ import net.wimpi.modbus.procimg.SimpleProcessImage;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.test.CamelTestSupport;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -101,7 +102,7 @@ public class JamodComponentTest extends CamelTestSupport {
         return new RouteBuilder() {
 
             public void configure() {
-                from("jamod:tcp://localhost:" + getPort() + "?referenceAddress=0&discreteInputCount=8&delay=100&initialDelay=100").to("log:cameljamod.impl.JamodComponent");
+                from("jamod:tcp://localhost:" + getPort() + "/discreteInputs/0?count=8&delay=100&initialDelay=100").to("log:cameljamod.impl.JamodComponent");
             }
         };
     }
