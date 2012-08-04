@@ -36,10 +36,12 @@ import org.apache.camel.impl.DefaultPollingEndpoint;
  * @author Steven Swor
  */
 public class JamodEndpoint extends DefaultPollingEndpoint {
+    
     /**
      * The connection.
      */
     private volatile AbstractMasterConnectionWrapper conn;
+    
     /**
      * The URI to the modbus device.
      */
@@ -50,6 +52,9 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
      */
     private Map<String, Object> parameters;
     
+    /**
+     * The component.
+     */
     private final JamodComponent component;
     
     /**
@@ -82,7 +87,7 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
             int initialDelay = component.getAndRemoveParameter(parameters, "initialDelay", Integer.class, Integer.valueOf(500));
             consumer.setInitialDelay(initialDelay);
             int count = component.getAndRemoveParameter(parameters, "count", Integer.class, Integer.valueOf(1));
-            consumer.setDiscreteInputCount(count);
+            consumer.setCount(count);
             return consumer;
         }else{
             throw new IllegalArgumentException(MessageFormat.format("Unsupported data type: {0}", dataType));
@@ -98,8 +103,6 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
     public boolean isLenientProperties() {
         return true;
     }
-    
-    
 
     @Override
     protected String createEndpointUri() {
@@ -126,6 +129,7 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
         super.doStop();
         getConnection().close();
     }
+    
     /**
      * Creates the Modbus connection.
      * @return the connection
@@ -145,6 +149,7 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
             port = Modbus.DEFAULT_PORT;
         }
         result.setPort(port);
+        result.setTimeout(1000);
         return result;
     }
     
