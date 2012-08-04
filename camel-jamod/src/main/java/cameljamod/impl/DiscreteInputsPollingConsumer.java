@@ -30,7 +30,7 @@ import org.apache.camel.impl.DefaultScheduledPollConsumer;
  * A Camel consumer which polls a Modbus device for its discrete inputs.
  * @author Steven Swor
  */
-public class JamodPollingConsumer extends DefaultScheduledPollConsumer {
+public class DiscreteInputsPollingConsumer extends DefaultScheduledPollConsumer {
     
     /**
      * The endpoint.
@@ -48,11 +48,11 @@ public class JamodPollingConsumer extends DefaultScheduledPollConsumer {
     private int discreteInputCount;
     
     /**
-     * Creates a new JamodPollingConsumer.
+     * Creates a new DiscreteInputsPollingConsumer.
      * @param endpoint the endpoint
      * @param processor the processor
      */
-    public JamodPollingConsumer(final JamodEndpoint endpoint, final Processor processor) {
+    public DiscreteInputsPollingConsumer(final JamodEndpoint endpoint, final Processor processor) {
         super(endpoint, processor);
         this.endpoint = endpoint;
         this.referenceAddress = endpoint.getReferenceAddress();
