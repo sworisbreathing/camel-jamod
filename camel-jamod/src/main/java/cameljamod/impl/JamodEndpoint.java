@@ -77,49 +77,28 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
     @Override
     public Consumer createConsumer(final Processor processor) throws Exception {
         String dataType = JamodUriResolver.getDataTypeFromUri(modbusURI);
+        ModbusPollingConsumer consumer;
         if ("discreteInputs".equalsIgnoreCase(dataType)) {
-            DiscreteInputsPollingConsumer consumer = new DiscreteInputsPollingConsumer(this, processor);
-            consumer.setReferenceAddress(JamodUriResolver.getReferenceFromUri(modbusURI));
-            int delay = component.getAndRemoveParameter(parameters, "delay", Integer.class, Integer.valueOf(500));
-            consumer.setDelay(delay);
-            int initialDelay = component.getAndRemoveParameter(parameters, "initialDelay", Integer.class, Integer.valueOf(500));
-            consumer.setInitialDelay(initialDelay);
-            int count = component.getAndRemoveParameter(parameters, "count", Integer.class, Integer.valueOf(1));
-            consumer.setCount(count);
-            return consumer;
+            consumer = new DiscreteInputsPollingConsumer(this, processor);
         } else if ("coils".equalsIgnoreCase(dataType)) {
-            DiscreteOutputsPollingConsumer consumer = new DiscreteOutputsPollingConsumer(this, processor);
-            consumer.setReferenceAddress(JamodUriResolver.getReferenceFromUri(modbusURI));
-            int delay = component.getAndRemoveParameter(parameters, "delay", Integer.class, Integer.valueOf(500));
-            consumer.setDelay(delay);
-            int initialDelay = component.getAndRemoveParameter(parameters, "initialDelay", Integer.class, Integer.valueOf(500));
-            consumer.setInitialDelay(initialDelay);
-            int count = component.getAndRemoveParameter(parameters, "count", Integer.class, Integer.valueOf(1));
-            consumer.setCount(count);
-            return consumer;
-        }else if ("registers".equalsIgnoreCase(dataType)) {
-            RegistersPollingConsumer consumer = new RegistersPollingConsumer(this, processor);
-            consumer.setReferenceAddress(JamodUriResolver.getReferenceFromUri(modbusURI));
-            int delay = component.getAndRemoveParameter(parameters, "delay", Integer.class, 500);
-            consumer.setDelay(delay);
-            int initialDelay = component.getAndRemoveParameter(parameters, "initialDelay", Integer.class, Integer.valueOf(500));
-            consumer.setInitialDelay(initialDelay);
-            int count = component.getAndRemoveParameter(parameters, "count", Integer.class, Integer.valueOf(1));
-            consumer.setCount(count);
-            return consumer;
-        }else if ("inputRegisters".equalsIgnoreCase(dataType)) {
-            InputRegistersPollingConsumer consumer = new InputRegistersPollingConsumer(this, processor);
-            consumer.setReferenceAddress(JamodUriResolver.getReferenceFromUri(modbusURI));
-            int delay = component.getAndRemoveParameter(parameters, "delay", Integer.class, 500);
-            consumer.setDelay(delay);
-            int initialDelay = component.getAndRemoveParameter(parameters, "initialDelay", Integer.class, Integer.valueOf(500));
-            consumer.setInitialDelay(initialDelay);
-            int count = component.getAndRemoveParameter(parameters, "count", Integer.class, Integer.valueOf(1));
-            consumer.setCount(count);
-            return consumer;
+            consumer = new DiscreteOutputsPollingConsumer(this, processor);
+        } else if ("registers".equalsIgnoreCase(dataType)) {
+            consumer = new RegistersPollingConsumer(this, processor);
+        } else if ("inputRegisters".equalsIgnoreCase(dataType)) {
+            consumer = new InputRegistersPollingConsumer(this, processor);
         } else {
             throw new IllegalArgumentException(MessageFormat.format("Unsupported data type: {0}", dataType));
         }
+        consumer.setReferenceAddress(JamodUriResolver.getReferenceFromUri(modbusURI));
+        int delay = component.getAndRemoveParameter(parameters, "delay", Integer.class, Integer.valueOf(500));
+        consumer.setDelay(delay);
+        int initialDelay = component.getAndRemoveParameter(parameters, "initialDelay", Integer.class, Integer.valueOf(500));
+        consumer.setInitialDelay(initialDelay);
+        int count = component.getAndRemoveParameter(parameters, "count", Integer.class, Integer.valueOf(1));
+        consumer.setCount(count);
+        boolean changesOnly = component.getAndRemoveParameter(parameters, "changesOnly", Boolean.class, Boolean.FALSE);
+        consumer.setChangesOnly(changesOnly);
+        return consumer;
     }
 
     @Override

@@ -15,6 +15,7 @@
  */
 package cameljamod.impl;
 
+import java.util.Arrays;
 import net.wimpi.modbus.msg.ReadInputDiscretesRequest;
 import net.wimpi.modbus.msg.ReadInputDiscretesResponse;
 import net.wimpi.modbus.util.BitVector;
@@ -46,4 +47,22 @@ public class DiscreteInputsPollingConsumer extends ModbusPollingConsumer<ReadInp
     protected BitVector getBodyFromResponse(ReadInputDiscretesResponse response) {
         return response.getDiscretes();
     }
+
+    @Override
+    protected boolean valueHasChanged(BitVector oldValue, BitVector newValue) {
+        if (oldValue==null) {
+            if (newValue!=null) {
+                return true;
+            }
+        }else{
+            if (newValue==null) {
+                return true;
+            }else{
+                return !Arrays.equals(oldValue.getBytes(), newValue.getBytes());
+            }
+        }
+        return false;
+    }
+    
+    
 }

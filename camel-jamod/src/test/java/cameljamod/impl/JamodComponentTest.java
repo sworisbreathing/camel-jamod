@@ -103,7 +103,7 @@ public class JamodComponentTest extends CamelTestSupport {
         return new RouteBuilder() {
 
             public void configure() {
-                from("jamod:tcp://localhost:" + getPort() + "/registers/1?count=1&delay=100&initialDelay=100").to("log:cameljamod.impl.JamodComponent");
+                from("jamod:tcp://localhost:" + getPort() + "/discreteInputs/0?count=8&delay=100&initialDelay=100&changesOnly=true").to("log:cameljamod.impl.JamodComponent");
             }
         };
     }

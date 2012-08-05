@@ -15,6 +15,7 @@
  */
 package cameljamod.impl;
 
+import java.util.Arrays;
 import net.wimpi.modbus.msg.ReadInputRegistersRequest;
 import net.wimpi.modbus.msg.ReadInputRegistersResponse;
 import net.wimpi.modbus.procimg.InputRegister;
@@ -45,5 +46,31 @@ public class InputRegistersPollingConsumer extends ModbusPollingConsumer<ReadInp
     @Override
     protected InputRegister[] getBodyFromResponse(ReadInputRegistersResponse response) {
         return response.getRegisters();
+    }
+
+    @Override
+    protected boolean valueHasChanged(InputRegister[] oldValue, InputRegister[] newValue) {
+        if (oldValue == null) {
+            if (newValue != null) {
+                // old was null, new is non-null
+                return true;
+            }
+        } else {
+            if (newValue==null) {
+                // old was non-null, new is null
+                return true;
+            }else if (oldValue.length!=newValue.length) {
+                // different lengths
+                return true;
+            }else{
+                // Check for changes, register-by-register and byte-by-byte
+                for (int i=0; i < oldValue.length; i++) {
+                    if (!Arrays.equals(oldValue[i].toBytes(), newValue[i].toBytes())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

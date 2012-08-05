@@ -45,6 +45,16 @@ public abstract class ModbusPollingConsumer<RequestType extends ModbusRequest, R
      * The number of values to read.
      */
     private int count;
+    
+    /**
+     * Only send messages when the polled value changes.
+     */
+    private boolean changesOnly;
+    
+    /**
+     * The last polled value.
+     */
+    private BodyType lastPolledValue;
 
     /**
      * Creates a new ModbusPollingConsumer.
@@ -55,6 +65,7 @@ public abstract class ModbusPollingConsumer<RequestType extends ModbusRequest, R
     public ModbusPollingConsumer(JamodEndpoint endpoint, Processor processor) {
         super(endpoint, processor);
         this.endpoint = endpoint;
+        this.lastPolledValue = null;
     }
 
     /**
@@ -93,6 +104,26 @@ public abstract class ModbusPollingConsumer<RequestType extends ModbusRequest, R
         this.referenceAddress = referenceAddress;
     }
 
+    /**
+     * Determines whether to send messages every time or only when the value
+     * changes.
+     * @return {@code true} if messages will only be sent when the value
+     * changes, {@code false} if messages will be sent every polling interval.
+     */
+    public boolean isChangesOnly() {
+        return changesOnly;
+    }
+
+    /**
+     * Sets whether to send messages every time or only when the value changes.
+     * @param changesOnly {@code true} if messages will only be sent when the
+     * value changes, {@code false} if messages will be sent every polling
+     * interval.
+     */
+    public void setChangesOnly(boolean changesOnly) {
+        this.changesOnly = changesOnly;
+    }
+
     @Override
     protected int poll() throws Exception {
         Exchange exchange = endpoint.createExchange();
@@ -103,11 +134,26 @@ public abstract class ModbusPollingConsumer<RequestType extends ModbusRequest, R
         transaction.setRequest(request);
         transaction.execute();
         ResponseType response = (ResponseType) transaction.getResponse();
-        Message message = exchange.getIn();
-        message.setBody(getBodyFromResponse(response));
-        getProcessor().process(exchange);
-        return 1;
+        BodyType currentValue = getBodyFromResponse(response);
+        BodyType tmp = lastPolledValue;
+        lastPolledValue = currentValue;
+        if (!isChangesOnly() || valueHasChanged(tmp, currentValue)) {
+            Message message = exchange.getIn();
+            message.setBody(currentValue);
+            getProcessor().process(exchange);
+            return 1;
+        }else{
+            return 0;
+        }
     }
+    
+    /**
+     * Determines if a polled value has changed.
+     * @param oldValue the old value.
+     * @param newValue the new value.
+     * @return whether or not the polled value has changed
+     */
+    protected abstract boolean valueHasChanged(BodyType oldValue, BodyType newValue);
 
     /**
      * Creates a new request to send to the modbus device.
