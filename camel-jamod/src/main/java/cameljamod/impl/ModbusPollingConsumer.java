@@ -16,9 +16,13 @@
 package cameljamod.impl;
 
 import cameljamod.impl.net.AbstractMasterConnectionWrapper;
+import java.util.Arrays;
 import net.wimpi.modbus.io.ModbusTransaction;
 import net.wimpi.modbus.msg.ModbusRequest;
 import net.wimpi.modbus.msg.ModbusResponse;
+import net.wimpi.modbus.procimg.InputRegister;
+import net.wimpi.modbus.procimg.Register;
+import net.wimpi.modbus.util.BitVector;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
@@ -169,4 +173,51 @@ public abstract class ModbusPollingConsumer<RequestType extends ModbusRequest, R
      * @return the body of the modbus response
      */
     protected abstract BodyType getBodyFromResponse(final ResponseType response);
+    
+    protected boolean valueHasChanged(BitVector oldValue, BitVector newValue) {
+        if (oldValue==null) {
+            if (newValue!=null) {
+                return true;
+            }
+        }else{
+            if (newValue==null) {
+                return true;
+            }else{
+                if (oldValue.size()!=newValue.size()) {
+                    return true;
+                }
+                return !Arrays.equals(oldValue.getBytes(), newValue.getBytes());
+            }
+        }
+        return false;
+    }
+    
+    protected boolean valueHasChanged(InputRegister[] oldValue, InputRegister[] newValue) {
+        if (oldValue == null) {
+            if (newValue != null) {
+                // old was null, new is non-null
+                return true;
+            }
+        } else {
+            if (newValue==null) {
+                // old was non-null, new is null
+                return true;
+            }else if (oldValue.length!=newValue.length) {
+                // different lengths
+                return true;
+            }else{
+                // Check for changes, register-by-register and byte-by-byte
+                for (int i=0; i < oldValue.length; i++) {
+                    if (!Arrays.equals(oldValue[i].toBytes(), newValue[i].toBytes())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    protected boolean valueHasChanged(final Register[] oldValue, final Register[] newValue) {
+        return valueHasChanged((InputRegister[])oldValue, (InputRegister[])newValue);
+    }
 }

@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cameljamod.impl;
+package cameljamod.impl.test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+import net.wimpi.modbus.Modbus;
+import net.wimpi.modbus.net.ModbusTCPListener;
+import net.wimpi.modbus.procimg.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
  * Utility methods for testing.
@@ -53,5 +58,37 @@ public class TestUtilities {
                 }
             }
         return results;
+    }
+    
+    private static volatile ModbusTCPListener listenerInstance = null;
+    
+    public static ModbusTCPListener getListenerInstance() {
+        if (listenerInstance==null) {
+            synchronized(TestUtilities.class) {
+                if (listenerInstance == null) {
+                    listenerInstance = new ModbusTCPListener(1);
+                    listenerInstance.setPort(Integer.parseInt(getTestProperty("tcp.port", String.valueOf(Modbus.DEFAULT_PORT))));                    
+                }
+            }
+        }
+        return listenerInstance;
+    }
+    
+    @BeforeClass
+    public static void setUpTests() {
+        SimpleProcessImage spi = new SimpleProcessImage();
+        for (int i=0;i<8;i++) {
+            spi.addDigitalIn(new SimpleDigitalIn());
+            spi.addDigitalOut(new SimpleDigitalOut());
+            spi.addInputRegister(new SimpleInputRegister());
+            spi.addRegister(new SimpleRegister());
+        }
+        getListenerInstance().start();
+        
+    }
+    
+    @AfterClass
+    public static void stopListener() {
+        getListenerInstance().stop();
     }
 }

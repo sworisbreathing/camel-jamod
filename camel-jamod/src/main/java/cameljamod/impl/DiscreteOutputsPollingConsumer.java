@@ -47,20 +47,4 @@ public class DiscreteOutputsPollingConsumer extends ModbusPollingConsumer<ReadCo
     protected BitVector getBodyFromResponse(ReadCoilsResponse response) {
         return response.getCoils();
     }
-    
-    @Override
-    protected boolean valueHasChanged(BitVector oldValue, BitVector newValue) {
-        if (oldValue==null) {
-            if (newValue!=null) {
-                return true;
-            }
-        }else{
-            if (newValue==null) {
-                return true;
-            }else{
-                return !Arrays.equals(oldValue.getBytes(), newValue.getBytes());
-            }
-        }
-        return false;
-    }
 }

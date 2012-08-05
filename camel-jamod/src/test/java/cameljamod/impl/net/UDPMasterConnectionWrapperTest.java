@@ -15,7 +15,7 @@
  */
 package cameljamod.impl.net;
 
-import cameljamod.impl.TestUtilities;
+import cameljamod.impl.test.TestUtilities;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import net.wimpi.modbus.Modbus;
