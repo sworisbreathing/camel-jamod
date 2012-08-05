@@ -97,6 +97,26 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
             int count = component.getAndRemoveParameter(parameters, "count", Integer.class, Integer.valueOf(1));
             consumer.setCount(count);
             return consumer;
+        }else if ("registers".equalsIgnoreCase(dataType)) {
+            RegistersPollingConsumer consumer = new RegistersPollingConsumer(this, processor);
+            consumer.setReferenceAddress(JamodUriResolver.getReferenceFromUri(modbusURI));
+            int delay = component.getAndRemoveParameter(parameters, "delay", Integer.class, 500);
+            consumer.setDelay(delay);
+            int initialDelay = component.getAndRemoveParameter(parameters, "initialDelay", Integer.class, Integer.valueOf(500));
+            consumer.setInitialDelay(initialDelay);
+            int count = component.getAndRemoveParameter(parameters, "count", Integer.class, Integer.valueOf(1));
+            consumer.setCount(count);
+            return consumer;
+        }else if ("inputRegisters".equalsIgnoreCase(dataType)) {
+            InputRegistersPollingConsumer consumer = new InputRegistersPollingConsumer(this, processor);
+            consumer.setReferenceAddress(JamodUriResolver.getReferenceFromUri(modbusURI));
+            int delay = component.getAndRemoveParameter(parameters, "delay", Integer.class, 500);
+            consumer.setDelay(delay);
+            int initialDelay = component.getAndRemoveParameter(parameters, "initialDelay", Integer.class, Integer.valueOf(500));
+            consumer.setInitialDelay(initialDelay);
+            int count = component.getAndRemoveParameter(parameters, "count", Integer.class, Integer.valueOf(1));
+            consumer.setCount(count);
+            return consumer;
         } else {
             throw new IllegalArgumentException(MessageFormat.format("Unsupported data type: {0}", dataType));
         }
