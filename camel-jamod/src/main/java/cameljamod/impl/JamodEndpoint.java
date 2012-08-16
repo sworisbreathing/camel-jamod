@@ -103,7 +103,7 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
 
     @Override
     public boolean isSingleton() {
-        return true;
+        return false;
     }
 
     @Override
@@ -190,7 +190,7 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
      * @return {@code true} if the URI scheme is {@code tcp}, otherwise
      * {@code false}.
      */
-    private static boolean isTCP(final URI uri) {
+    public static boolean isTCP(final URI uri) {
         return "tcp".equalsIgnoreCase(uri.getScheme());
     }
 
@@ -201,7 +201,7 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
      * @return {@code true} if the URI scheme is {@code udp}, otherwise
      * {@code false}.
      */
-    private static boolean isUDP(final URI uri) {
+    public static boolean isUDP(final URI uri) {
         return "udp".equalsIgnoreCase(uri.getScheme());
     }
 

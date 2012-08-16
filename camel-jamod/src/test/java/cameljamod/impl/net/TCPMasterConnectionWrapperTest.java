@@ -18,27 +18,32 @@ package cameljamod.impl.net;
 import cameljamod.impl.test.TestUtilities;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.atomic.AtomicReference;
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.net.ModbusTCPListener;
 import net.wimpi.modbus.net.TCPMasterConnection;
 import org.junit.AfterClass;
-import org.junit.Test;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.junit.Test;
+import static org.mockito.BDDMockito.*;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Unit tests for {@link TCPMasterConnectionWrapper}.
- * 
+ *
  * @author Steven Swor
  */
-@Ignore("connection refused?")
 public class TCPMasterConnectionWrapperTest {
-    
+
     /**
      * The Modbus listener.
      */
     private static ModbusTCPListener listener = null;
-    
     /**
      * The modbus port.
      */
@@ -49,6 +54,7 @@ public class TCPMasterConnectionWrapperTest {
 
     /**
      * Sets up the Modbus listener.
+     *
      * @throws Exception if the listener cannot be set up
      */
     @BeforeClass
@@ -61,6 +67,7 @@ public class TCPMasterConnectionWrapperTest {
 
     /**
      * Stops the modbus listener.
+     *
      * @throws Exception if the listener cannot be stopped
      */
     @AfterClass
@@ -71,6 +78,7 @@ public class TCPMasterConnectionWrapperTest {
 
     /**
      * Creates a new master connection.
+     *
      * @return a new master connection
      */
     protected static TCPMasterConnection createMockConnection() {
@@ -89,9 +97,44 @@ public class TCPMasterConnectionWrapperTest {
      */
     @Test
     public void testConnectAndClose() throws Exception {
-        TCPMasterConnection connection = createMockConnection();
-        connection.connect();
-        connection.close();
+        final TCPMasterConnection mockConnection = mock(TCPMasterConnection.class);
+        doAnswer(new Answer() {
+
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Mockito.when(mockConnection.isConnected()).thenReturn(Boolean.TRUE);
+                return null;
+            }
+        }).when(mockConnection).connect();
+        doAnswer(new Answer(){
+
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Mockito.when(mockConnection.isConnected()).thenReturn(Boolean.FALSE);
+                return null;
+            }
+        }).when(mockConnection).close();
+        TCPMasterConnectionWrapper instance = new TCPMasterConnectionWrapper(mockConnection);
+        assertFalse(instance.isConnected());
+        instance.connect();
+        assertTrue(instance.isConnected());
+        instance.close();
+        assertFalse(instance.isConnected());
     }
 
+    @Test
+    public void testIsConnected() {
+        TCPMasterConnection mockConnection = mock(TCPMasterConnection.class);
+        when(mockConnection.isConnected()).thenReturn(Boolean.TRUE, Boolean.FALSE);
+        TCPMasterConnectionWrapper instance = new TCPMasterConnectionWrapper(mockConnection);
+        assertTrue(instance.isConnected());
+        assertFalse(instance.isConnected());
+    }
+
+    @Test
+    public void testGetAddressAndSetAddress() throws Exception {
+        TCPMasterConnection conn = new TCPMasterConnection(null);
+        TCPMasterConnectionWrapper instance = new TCPMasterConnectionWrapper(conn);
+        assertNull(instance.getAddress());
+        instance.setAddress(InetAddress.getLocalHost());
+        assertEquals(InetAddress.getLocalHost(), instance.getAddress());
+    }
 }
