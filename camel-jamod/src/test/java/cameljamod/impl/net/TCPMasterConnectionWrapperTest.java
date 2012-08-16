@@ -17,19 +17,19 @@ package cameljamod.impl.net;
 
 import cameljamod.impl.test.TestUtilities;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.concurrent.atomic.AtomicReference;
 import net.wimpi.modbus.Modbus;
+import net.wimpi.modbus.io.ModbusTCPTransaction;
+import net.wimpi.modbus.io.ModbusTCPTransport;
+import net.wimpi.modbus.io.ModbusTransaction;
+import net.wimpi.modbus.io.ModbusTransport;
 import net.wimpi.modbus.net.ModbusTCPListener;
 import net.wimpi.modbus.net.TCPMasterConnection;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.mockito.BDDMockito.*;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -77,22 +77,6 @@ public class TCPMasterConnectionWrapperTest {
     }
 
     /**
-     * Creates a new master connection.
-     *
-     * @return a new master connection
-     */
-    protected static TCPMasterConnection createMockConnection() {
-        try {
-            TCPMasterConnection result = new TCPMasterConnection(InetAddress.getLocalHost());
-            result.setPort(port);
-            result.setTimeout(1000);
-            return result;
-        } catch (UnknownHostException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    /**
      * Tests {@link TCPMasterConnection#connect()} and {@link TCPMasterConnection#close()}.
      */
     @Test
@@ -136,5 +120,44 @@ public class TCPMasterConnectionWrapperTest {
         assertNull(instance.getAddress());
         instance.setAddress(InetAddress.getLocalHost());
         assertEquals(InetAddress.getLocalHost(), instance.getAddress());
+    }
+    
+    @Test
+    public void testCreateTransaction() throws Exception {
+        TCPMasterConnection conn = new TCPMasterConnection(null);
+        TCPMasterConnectionWrapper instance = new TCPMasterConnectionWrapper(conn);
+        ModbusTransaction transaction = instance.createTransaction();
+        assertNotNull(transaction);
+        assertTrue(transaction instanceof ModbusTCPTransaction);
+    }
+    
+    @Test
+    public void testGetModbusTransport() {
+        TCPMasterConnection conn = new TCPMasterConnection(null);
+        TCPMasterConnectionWrapper instance = new TCPMasterConnectionWrapper(conn);
+        ModbusTransport transport = instance.getModbusTransport();
+        /*
+         * TODO jamod's API will return null until a successful connection is
+         * established, so eventually we need to run a simulator during the test
+         * phase so we can test this properly.
+         */
+        assertNull(transport);
+        
+    }
+    
+    @Test
+    public void testGetPort() {
+        TCPMasterConnection conn = new TCPMasterConnection(null);
+        conn.setPort(1234);
+        TCPMasterConnectionWrapper instance = new TCPMasterConnectionWrapper(conn);
+        assertEquals(1234, instance.getPort());
+    }
+    
+    @Test
+    public void testGetTimeout() {
+        TCPMasterConnection conn = new TCPMasterConnection(null);
+        conn.setTimeout(5678);
+        TCPMasterConnectionWrapper instance = new TCPMasterConnectionWrapper(conn);
+        assertEquals(5678, instance.getTimeout());
     }
 }

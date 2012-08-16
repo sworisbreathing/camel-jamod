@@ -15,83 +15,124 @@
  */
 package cameljamod.impl.net;
 
-import cameljamod.impl.test.TestUtilities;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import net.wimpi.modbus.Modbus;
-import net.wimpi.modbus.net.ModbusUDPListener;
+import net.wimpi.modbus.io.ModbusTransaction;
+import net.wimpi.modbus.io.ModbusTransport;
+import net.wimpi.modbus.io.ModbusUDPTransaction;
+import net.wimpi.modbus.io.ModbusUDPTransport;
 import net.wimpi.modbus.net.UDPMasterConnection;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
+import static org.junit.Assert.*;
 import org.junit.Test;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.*;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Unit tests for {@link UDPMasterConnectionWrapper}.
- * 
+ *
  * @author Steven Swor
  */
-@Ignore("Jamod UDP listener does not clean up threads when stopping")
 public class UDPMasterConnectionWrapperTest {
-
-    /**
-     * The modbus listener.
-     */
-    private static ModbusUDPListener listener = null;
-    
-    /**
-     * The port.
-     */
-    private static int port = Modbus.DEFAULT_PORT;
 
     public UDPMasterConnectionWrapperTest() {
     }
 
     /**
-     * Sets up the modbus listener.
-     * @throws Exception if the modbus listener cannot be set up
-     */
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        listener = new ModbusUDPListener(InetAddress.getLocalHost());
-        port = Integer.parseInt(TestUtilities.getTestProperty("udp.port", String.valueOf(Modbus.DEFAULT_PORT)));
-        listener.setPort(port);
-        listener.start();
-    }
-
-    /**
-     * Stops the modbus listener.
-     * @throws Exception if the modbus listener cannot be stopped
-     */
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        listener.stop();
-        listener = null;
-    }
-
-    /**
-     * Creates a new modbus connection.
-     * @return a new modbus connection
-     */
-    protected static UDPMasterConnection createMockConnection() {
-        try {
-            UDPMasterConnection result = new UDPMasterConnection(InetAddress.getLocalHost());
-            result.setPort(port);
-            return result;
-        } catch (UnknownHostException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    /**
-     * Tests {@link UDPMasterConnectionWrapper#connect()} and
-     * {@link UDPMasterConnectionWrapper#close()}.
+     * Tests {@link UDPMasterConnection#connect()} and {@link UDPMasterConnection#close()}.
      */
     @Test
     public void testConnectAndClose() throws Exception {
-        UDPMasterConnection connection = createMockConnection();
-        connection.connect();
-        connection.close();
+        final UDPMasterConnection mockConnection = mock(UDPMasterConnection.class);
+        doAnswer(new Answer() {
+
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Mockito.when(mockConnection.isConnected()).thenReturn(Boolean.TRUE);
+                return null;
+            }
+        }).when(mockConnection).connect();
+        doAnswer(new Answer() {
+
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Mockito.when(mockConnection.isConnected()).thenReturn(Boolean.FALSE);
+                return null;
+            }
+        }).when(mockConnection).close();
+        UDPMasterConnectionWrapper instance = new UDPMasterConnectionWrapper(mockConnection);
+        assertFalse(instance.isConnected());
+        instance.connect();
+        assertTrue(instance.isConnected());
+        instance.close();
+        assertFalse(instance.isConnected());
     }
 
+    @Test
+    public void testIsConnected() {
+        UDPMasterConnection mockConnection = mock(UDPMasterConnection.class);
+        when(mockConnection.isConnected()).thenReturn(Boolean.TRUE, Boolean.FALSE);
+        UDPMasterConnectionWrapper instance = new UDPMasterConnectionWrapper(mockConnection);
+        assertTrue(instance.isConnected());
+        assertFalse(instance.isConnected());
+    }
+
+    @Test
+    public void testGetAddressAndSetAddress() throws Exception {
+        UDPMasterConnection conn = new UDPMasterConnection(null);
+        UDPMasterConnectionWrapper instance = new UDPMasterConnectionWrapper(conn);
+        assertNull(instance.getAddress());
+        instance.setAddress(InetAddress.getLocalHost());
+        assertEquals(InetAddress.getLocalHost(), instance.getAddress());
+    }
+
+    @Test
+    public void testCreateTransaction() throws Exception {
+        UDPMasterConnection conn = new UDPMasterConnection(InetAddress.getLocalHost());
+        conn.setPort(1024);
+        conn.connect();
+        try {
+            UDPMasterConnectionWrapper instance = new UDPMasterConnectionWrapper(conn);
+            ModbusTransaction transaction = instance.createTransaction();
+            assertNotNull(transaction);
+            assertTrue(transaction instanceof ModbusUDPTransaction);
+        } finally {
+            conn.close();
+        }
+    }
+
+    @Test
+    public void testGetModbusTransport() throws Exception {
+        UDPMasterConnection conn = new UDPMasterConnection(InetAddress.getLocalHost());
+        conn.setPort(1024);
+        conn.connect();
+        try {
+            UDPMasterConnectionWrapper instance = new UDPMasterConnectionWrapper(conn);
+            ModbusTransport transport = instance.getModbusTransport();
+            assertNotNull(transport);
+            assertTrue(transport instanceof ModbusUDPTransport);
+        } finally {
+            conn.close();
+        }
+
+    }
+
+    @Test
+    public void testGetPortAndSetPort() {
+        UDPMasterConnection conn = new UDPMasterConnection(null);
+        UDPMasterConnectionWrapper instance = new UDPMasterConnectionWrapper(conn);
+        instance.setPort(1234);
+        assertEquals(1234, instance.getPort());
+    }
+
+    @Test
+    public void testGetTimeoutAndSetTimeout() throws Exception {
+        UDPMasterConnection conn = new UDPMasterConnection(InetAddress.getLocalHost());
+        conn.connect();
+        try {
+            UDPMasterConnectionWrapper instance = new UDPMasterConnectionWrapper(conn);
+            instance.setTimeout(5678);
+            assertEquals(5678, instance.getTimeout());
+        } finally {
+            conn.close();
+        }
+    }
 }
