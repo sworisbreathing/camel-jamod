@@ -17,12 +17,15 @@ package cameljamod.impl;
 
 import cameljamod.impl.net.AbstractMasterConnectionWrapper;
 import cameljamod.impl.net.TCPMasterConnectionWrapper;
+import cameljamod.impl.net.UDPMasterConnectionWrapper;
 import java.net.InetAddress;
 import java.net.URI;
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.net.TCPMasterConnection;
 import net.wimpi.modbus.net.UDPMasterConnection;
+import org.apache.camel.Consumer;
 import org.apache.camel.Processor;
+import org.apache.camel.ResolveEndpointFailedException;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -41,22 +44,21 @@ public class JamodEndpointTest {
     
     public JamodEndpointTest() {
     }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         testLogger = LoggerFactory.getLogger(JamodEndpointTest.class);
     }
-
+    
     @AfterClass
     public static void tearDownClass() throws Exception {
         testLogger = null;
     }
-    
     private volatile JamodEndpoint instance = null;
     
     protected JamodEndpoint getInstance() throws Exception {
-        if (instance==null) {
-            synchronized(this) {
+        if (instance == null) {
+            synchronized (this) {
                 if (instance == null) {
                     JamodComponent c = new JamodComponent();
                     c.setCamelContext(new DefaultCamelContext());
@@ -72,6 +74,10 @@ public class JamodEndpointTest {
      */
     @Test
     public void testCreateProducer() throws Exception {
+        JamodComponent c = new JamodComponent();
+        c.setCamelContext(new DefaultCamelContext());
+        JamodEndpoint endpoint = (JamodEndpoint) c.createEndpoint("jamod:tcp://localhost/coils/0");
+        assertNull(endpoint.createProducer());
     }
 
     /**
@@ -114,7 +120,7 @@ public class JamodEndpointTest {
      */
     @Test
     public void testCreateEndpointUri() throws Exception {
-        assertEquals("tcp://localhost:1024/discreteInputs/0",getInstance().createEndpointUri());
+        assertEquals("tcp://localhost:1024/discreteInputs/0", getInstance().createEndpointUri());
     }
 
     /**
@@ -125,20 +131,6 @@ public class JamodEndpointTest {
         AbstractMasterConnectionWrapper connection = getInstance().getConnection();
         assertNotNull(connection);
         assertTrue(connection instanceof TCPMasterConnectionWrapper);
-    }
-
-    /**
-     * Test of doStop method, of class JamodEndpoint.
-     */
-    @Test
-    public void testDoStop() throws Exception {
-    }
-
-    /**
-     * Test of createConnection method, of class JamodEndpoint.
-     */
-    @Test
-    public void testCreateConnection() throws Exception {
     }
 
     /**
@@ -169,6 +161,34 @@ public class JamodEndpointTest {
     @Test
     public void testIsUDP() throws Exception {
         assertTrue(JamodEndpoint.isUDP(new URI("udp://localhost:512")));
+    }
+    
+    @Test
+    public void testCreateConnectionUDP() throws Exception {
+        JamodComponent c = new JamodComponent();
+        c.setCamelContext(new DefaultCamelContext());
+        JamodEndpoint endpoint = (JamodEndpoint) c.createEndpoint("jamod://udp://localhost");
+        AbstractMasterConnectionWrapper wrapper = endpoint.createConnection();
+        assertNotNull(wrapper);
+        assertTrue(wrapper instanceof UDPMasterConnectionWrapper);
+    }
+    
+    @Test(expected = ResolveEndpointFailedException.class)
+    public void testCreateConnectionBadURL() throws Exception {
+        JamodComponent c = new JamodComponent();
+        c.setCamelContext(new DefaultCamelContext());
+        JamodEndpoint endpoint = (JamodEndpoint) c.createEndpoint("jamod://s3://localhost");
+        AbstractMasterConnectionWrapper wrapper = endpoint.createConnection();
+        fail("Exception should have been thrown.");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateConsumerBadDataType() throws Exception {
+        JamodComponent c = new JamodComponent();
+        c.setCamelContext(new DefaultCamelContext());
+        JamodEndpoint endpoint = (JamodEndpoint) c.createEndpoint("jamod://tcp://localhost/opcAddresses/0");
+        Consumer consumer = endpoint.createConsumer(new NoopProcessor());
+        fail("Exception should have been thrown");
     }
     
 }

@@ -149,6 +149,7 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
         InetAddress addr = resolveHostAddress(modbusURI);
         if (isTCP(modbusURI)) {
             result = new TCPMasterConnectionWrapper(createTCPMasterConnection(addr));
+            result.setTimeout(1000);
         } else if (isUDP(modbusURI)) {
             result = new UDPMasterConnectionWrapper(createUDPMasterConnection(addr));
         } else {
@@ -158,8 +159,7 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
         if (port == -1) {
             port = Modbus.DEFAULT_PORT;
         }
-        result.setPort(port);
-        result.setTimeout(1000);
+        result.setPort(port);        
         return result;
     }
 
@@ -211,7 +211,7 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
      * @param uri the URI
      * @return an {@link java.net.InetAddress} for the URI's host
      */
-    private static InetAddress resolveHostAddress(final URI uri) {
+    protected static InetAddress resolveHostAddress(final URI uri) {
         String host = uri.getHost();
         try {
             return InetAddress.getByName(host);
