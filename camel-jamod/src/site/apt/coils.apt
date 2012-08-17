@@ -1,12 +1,17 @@
-Discrete Inputs
+Discrete Outputs
 
-    Discrete inputs are single bits wired to the device from an external source.
-    They have only two states: <<<true>>> or <<<false>>>.  They are read-only.
+    Discrete outputs (also known as <<coils>>) are single bits wired to external
+    devices whose states are controlled by the Modbus device.  They can be read
+    from or written to, and are often controlled by the device's programmable
+    logic.
 
     Camel-jamod implements a polling consumer for reading the status of discrete
-    inputs.  Each time the device is polled, the consumer will send the
-    resulting BitVector to the Camel route.  This behavior can be modified to
-    only send messages when one or more inputs change by specifying
+    outputs (or coils), which can be useful for third-party monitoring the
+    device or for verifying the device's programmable logic.
+
+    Each time the device is polled, the consumer will send
+    the resulting BitVector to the Camel route.  This behavior can be modified
+    to only send messages when one or more inputs change by specifying
     <<<changesOnly=true>>> in the URI's query string.
 
     The BitVector contains the status of all the bits polled.  Individual bit
@@ -20,6 +25,6 @@ Discrete Inputs
 *--------------------+------------+--------------------------------------------+
 | changesOnly        | <<<false>>>| When <<<true>>>, messages will only be sent|
 |                    |            | to the camel route when one or more digital|
-|                    |            | inputs have changed state since the last   |
+|                    |            | outputs have changed state since the last  |
 |                    |            | polling.                                   |
 *--------------------+------------+--------------------------------------------+

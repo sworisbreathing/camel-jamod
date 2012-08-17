@@ -27,8 +27,14 @@
     </skin>
     <version position="right" />
     <body>
+        <menu name="Endpoint URIs">
+            <item name="URI Syntax" href="uri-common.html" />
+        </menu>
         <menu name="Reading Modbus Data">
             <item name="Discrete Inputs" href="discrete-inputs.html" />
+            <item name="Coils" href="coils.html" />
+            <item name="Input Registers" href="input-registers.html" />
+            <item name="Holding Registers" href="registers.html" />
         </menu>
         <menu ref="reports" />
         <links>
