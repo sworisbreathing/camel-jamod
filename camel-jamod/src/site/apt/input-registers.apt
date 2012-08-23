@@ -2,11 +2,14 @@ Input Registers
 
     Camel-jamod implements a polling consumer for reading the status of 16-bit
     input registers (for those devices which make them available to Modbus).
+    These are typically used to store values from analog sensors, such as
+    pressure gauges or thermocouples.
 
-    Each time the device is polled, the consumer will send
-    the resulting Register array to the Camel route.  This behavior can be
-    modified to only send messages when one or more register values change by
-    specifying <<<changesOnly=true>>> in the URI's query string.
+    When camel-jamod polls a device for its input registers, it will push
+    a message to the Camel route containing an array of <<<InputRegister>>>.
+    This behavior can be modified to only send messages when one or more
+    register values change by specifying <<<changesOnly=true>>> in the URI's
+    query string.
 
 * Optional parameters:
 

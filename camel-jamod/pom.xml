@@ -80,6 +80,54 @@
             <version>1.8.5</version> 
             <scope>test</scope>
         </dependency>
+        
+        <!--
+            Dependencies for OSGi testing
+            
+            TODO: Go through these and trim out the ones that aren't necessary
+            for testing the component in an OSGi environment.
+        -->
+        <dependency>
+            <groupId>org.eclipse.gemini.blueprint</groupId>	  
+            <artifactId>gemini-blueprint-test</artifactId>
+            <version>1.0.0.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>osgi</artifactId>
+            <version>3.5.0.v20090520</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.gemini.blueprint</groupId>
+            <artifactId>gemini-blueprint-extender</artifactId>
+            <version>1.0.0.RELEASE</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.gemini.blueprint</groupId>
+            <artifactId>gemini-blueprint-io</artifactId>
+            <version>1.0.0.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+        
     </dependencies>
     
     <repositories>
@@ -93,6 +141,16 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <id>zodiac-repository</id>
+            <name>Zodiac Milestone Repository</name>
+            <url>http://zodiac.springsource.com/maven/bundles/milestone</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.bundle.external</id>
+            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/external</url>
         </repository>
     </repositories>
 

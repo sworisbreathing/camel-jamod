@@ -3,12 +3,13 @@ Registers
     Camel-jamod implements a polling consumer for reading the status of holding
     registers (for those devices which make them available to Modbus), which can
     be useful for third-party monitoring the device or for verifying the
-    device's programmable logic.
+    device's programmable logic.  A holding register stores 16 bits of data.
 
-    Each time the device is polled, the consumer will send the resulting
-    Register array to the Camel route.  This behavior can be modified to only
-    send messages when one or more register values change by specifying
-    <<<changesOnly=true>>> in the URI's query string.
+    When camel-jamod polls a device for its holding registers, it will push
+    a message to the Camel route containing an array of <<<Register>>>.  This
+    behavior can be modified to only send messages when one or more register 
+    values change by specifying <<<changesOnly=true>>> in the URI's query
+    string.
 
 * Optional parameters:
 
