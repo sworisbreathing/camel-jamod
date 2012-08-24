@@ -75,9 +75,9 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
         ModbusProducer producer;
         if ("coils".equalsIgnoreCase(dataType)) {
             producer = new DiscreteOutputsProducer(this);
-        }else if ("registers".equalsIgnoreCase(dataType)) {
+        } else if ("registers".equalsIgnoreCase(dataType)) {
             producer = new RegistersProducer(this);
-        }else{
+        } else {
             throw new IllegalArgumentException(MessageFormat.format("Unsupported data type: {0}", dataType));
         }
         producer.setReferenceAddress(JamodUriResolver.getReferenceFromUri(modbusURI));
@@ -94,8 +94,12 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
             consumer = new DiscreteOutputsPollingConsumer(this, processor);
         } else if ("registers".equalsIgnoreCase(dataType)) {
             consumer = new RegistersPollingConsumer(this, processor);
+        } else if ("register".equalsIgnoreCase(dataType)) {
+            consumer = new RegisterPollingConsumer(this, processor);
         } else if ("inputRegisters".equalsIgnoreCase(dataType)) {
             consumer = new InputRegistersPollingConsumer(this, processor);
+        } else if ("inputRegister".equalsIgnoreCase(dataType)) {
+            consumer = new InputRegisterPollingConsumer(this, processor);
         } else {
             throw new IllegalArgumentException(MessageFormat.format("Unsupported data type: {0}", dataType));
         }
@@ -169,7 +173,7 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
         if (port == -1) {
             port = Modbus.DEFAULT_PORT;
         }
-        result.setPort(port);        
+        result.setPort(port);
         return result;
     }
 
