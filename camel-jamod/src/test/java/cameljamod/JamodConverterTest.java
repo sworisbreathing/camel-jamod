@@ -16,9 +16,10 @@
 package cameljamod;
 
 import java.util.Random;
+import net.wimpi.modbus.procimg.InputRegister;
+import net.wimpi.modbus.procimg.Register;
 import net.wimpi.modbus.util.BitVector;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -34,6 +35,15 @@ public class JamodConverterTest {
         byte[] randomBytes = new byte[size];
         random.nextBytes(randomBytes);
         return randomBytes;
+    }
+
+    private static byte[] generateRandomEvenNumberOfBytes(final int maxSize) {
+        int size = 1 + random.nextInt(maxSize);
+        size += size % 2;
+        byte[] randomBytes = new byte[size];
+        random.nextBytes(randomBytes);
+        return randomBytes;
+
     }
 
     /**
@@ -70,5 +80,21 @@ public class JamodConverterTest {
             String after = JamodConverter.toString(bv);
             assertEquals(str, after);
         }
+    }
+
+    @Test
+    public void testConvertingBetweenBytesAndInputRegisters() {
+        byte[] bytes = generateRandomEvenNumberOfBytes(32);
+        assertTrue(bytes.length % 2 == 0);
+        InputRegister[] registers = JamodConverter.toInputRegisterArray(bytes);
+        assertArrayEquals(bytes, JamodConverter.toByteArray(registers));
+    }
+    
+    @Test
+    public void testConvertingBetweenBytesAndRegisters() {
+        byte[] bytes = generateRandomEvenNumberOfBytes(32);
+        assertTrue(bytes.length % 2 == 0);
+        Register[] registers = JamodConverter.toRegisterArray(bytes);
+        assertArrayEquals(bytes, JamodConverter.toByteArray(registers));
     }
 }

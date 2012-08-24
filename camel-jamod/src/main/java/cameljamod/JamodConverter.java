@@ -16,9 +16,12 @@
 package cameljamod;
 
 import java.util.Arrays;
+import net.wimpi.modbus.procimg.InputRegister;
+import net.wimpi.modbus.procimg.Register;
+import net.wimpi.modbus.procimg.SimpleInputRegister;
+import net.wimpi.modbus.procimg.SimpleRegister;
 import net.wimpi.modbus.util.BitVector;
 import org.apache.camel.Converter;
-import org.apache.camel.Exchange;
 
 /**
  *
@@ -64,5 +67,47 @@ public class JamodConverter {
             }
         }
         return bitVector;
+    }
+
+    @Converter
+    public static InputRegister[] toInputRegisterArray(final byte[] bytes) {
+        int size = bytes.length / 2;
+        InputRegister[] results = new InputRegister[size];
+        for (int i = 0; i < bytes.length; i += 2) {
+            results[i / 2] = new SimpleInputRegister(bytes[i], bytes[i + 1]);
+        }
+        return results;
+    }
+
+    @Converter
+    public static byte[] toByteArray(final InputRegister[] inputRegisters) {
+        int size = inputRegisters.length * 2;
+        byte[] results = new byte[size];
+        for (int i = 0; i < inputRegisters.length; i++) {
+            byte[] registerBytes = inputRegisters[i].toBytes();
+            System.arraycopy(registerBytes, 0, results, i * 2, 2);
+        }
+        return results;
+    }
+
+    @Converter
+    public static Register[] toRegisterArray(final byte[] bytes) {
+        int size = bytes.length / 2;
+        Register[] results = new Register[size];
+        for (int i = 0; i < bytes.length; i += 2) {
+            results[i / 2] = new SimpleRegister(bytes[i], bytes[i + 1]);
+        }
+        return results;
+    }
+
+    @Converter
+    public static byte[] toByteArray(final Register[] registers) {
+        int size = registers.length * 2;
+        byte[] results = new byte[size];
+        for (int i = 0; i < registers.length; i++) {
+            byte[] registerBytes = registers[i].toBytes();
+            System.arraycopy(registerBytes, 0, results, i * 2, 2);
+        }
+        return results;
     }
 }
