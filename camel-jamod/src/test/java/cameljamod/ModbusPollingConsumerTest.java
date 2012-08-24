@@ -13,8 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package cameljamod.impl;
+package cameljamod;
 
+import cameljamod.ModbusPollingConsumer;
 import java.util.Random;
 import net.wimpi.modbus.msg.ModbusRequest;
 import net.wimpi.modbus.msg.ModbusResponse;

@@ -13,11 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package cameljamod.impl;
+package cameljamod;
 
-import cameljamod.impl.net.AbstractMasterConnectionWrapper;
-import cameljamod.impl.net.TCPMasterConnectionWrapper;
-import cameljamod.impl.net.UDPMasterConnectionWrapper;
+import cameljamod.DiscreteInputsPollingConsumer;
+import cameljamod.JamodComponent;
+import cameljamod.JamodEndpoint;
+import cameljamod.InputRegistersPollingConsumer;
+import cameljamod.DiscreteOutputsPollingConsumer;
+import cameljamod.RegistersPollingConsumer;
+import cameljamod.net.AbstractMasterConnectionWrapper;
+import cameljamod.net.TCPMasterConnectionWrapper;
+import cameljamod.net.UDPMasterConnectionWrapper;
 import java.net.InetAddress;
 import java.net.URI;
 import net.wimpi.modbus.Modbus;

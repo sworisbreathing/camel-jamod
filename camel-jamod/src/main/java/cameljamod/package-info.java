@@ -17,4 +17,4 @@
 /**
  * Implementations for the Jamod camel component.
  */
-package cameljamod.impl;
+package cameljamod;

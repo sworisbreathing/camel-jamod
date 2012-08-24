@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cameljamod.impl;
+package cameljamod;
 
 import java.util.Arrays;
 import net.wimpi.modbus.msg.ReadCoilsRequest;

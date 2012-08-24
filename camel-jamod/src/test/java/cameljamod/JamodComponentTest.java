@@ -13,8 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package cameljamod.impl;
+package cameljamod;
 
+import cameljamod.JamodComponent;
 import net.wimpi.modbus.net.ModbusTCPListener;
 import net.wimpi.modbus.procimg.SimpleProcessImage;
 import org.apache.camel.CamelContext;

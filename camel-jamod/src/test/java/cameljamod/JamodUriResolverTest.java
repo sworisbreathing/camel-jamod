@@ -13,8 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package cameljamod.impl;
+package cameljamod;
 
+import cameljamod.JamodUriResolver;
 import java.net.URI;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

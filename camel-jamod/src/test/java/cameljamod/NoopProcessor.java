@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cameljamod.impl;
+package cameljamod;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cameljamod.impl;
+package cameljamod;
 
-import cameljamod.impl.net.AbstractMasterConnectionWrapper;
+import cameljamod.net.AbstractMasterConnectionWrapper;
 import java.util.Arrays;
 import net.wimpi.modbus.io.ModbusTransaction;
 import net.wimpi.modbus.msg.ModbusRequest;

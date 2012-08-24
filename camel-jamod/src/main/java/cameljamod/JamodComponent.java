@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cameljamod.impl;
+package cameljamod;
 
 import java.net.URI;
 import java.util.HashMap;

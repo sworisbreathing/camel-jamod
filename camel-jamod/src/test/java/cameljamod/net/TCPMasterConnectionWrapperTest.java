@@ -13,9 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package cameljamod.impl.net;
+package cameljamod.net;
 
-import cameljamod.impl.test.TestUtilities;
+import cameljamod.net.TCPMasterConnectionWrapper;
+import cameljamod.test.TestUtilities;
 import java.net.InetAddress;
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.io.ModbusTCPTransaction;

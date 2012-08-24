@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cameljamod.impl.net;
+package cameljamod.net;
 
 import java.net.InetAddress;
 import net.wimpi.modbus.io.ModbusTransaction;

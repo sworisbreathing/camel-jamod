@@ -17,4 +17,4 @@
 /**
  * Wrappers for Jamod master connections.
  */
-package cameljamod.impl.net;
+package cameljamod.net;

@@ -6,11 +6,10 @@
     <groupId>camel-jamod</groupId>
     <artifactId>camel-jamod</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>bundle</packaging>
 
-    <name>camel-jamod OSGi Bundle</name>
+    <name>Jamod Camel Component</name>
     <description>
-        The camel-jamod OSGi bundle aims to provide a Camel component for
+        The Jamod Camel Component aims to provide a Camel component for
         defining endpoints to Modbus devices through the use of Jamod, a 100%
         Java library implementation of the Modbus protocol.
     </description>
@@ -81,53 +80,6 @@
             <scope>test</scope>
         </dependency>
         
-        <!--
-            Dependencies for OSGi testing
-            
-            TODO: Go through these and trim out the ones that aren't necessary
-            for testing the component in an OSGi environment.
-        -->
-        <dependency>
-            <groupId>org.eclipse.gemini.blueprint</groupId>	  
-            <artifactId>gemini-blueprint-test</artifactId>
-            <version>1.0.0.RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.eclipse</groupId>
-            <artifactId>osgi</artifactId>
-            <version>3.5.0.v20090520</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.eclipse.gemini.blueprint</groupId>
-            <artifactId>gemini-blueprint-extender</artifactId>
-            <version>1.0.0.RELEASE</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.eclipse.gemini.blueprint</groupId>
-            <artifactId>gemini-blueprint-io</artifactId>
-            <version>1.0.0.RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-            <version>1.6.4</version>
-            <scope>test</scope>
-        </dependency>
-        
     </dependencies>
     
     <repositories>
@@ -156,17 +108,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.2.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-Activator>org.cameljamod.Activator</Bundle-Activator>
-                    </instructions>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

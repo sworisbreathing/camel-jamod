@@ -13,8 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package cameljamod.impl;
+package cameljamod;
 
+import cameljamod.JamodComponent;
+import cameljamod.JamodEndpoint;
+import cameljamod.DiscreteOutputsPollingConsumer;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
