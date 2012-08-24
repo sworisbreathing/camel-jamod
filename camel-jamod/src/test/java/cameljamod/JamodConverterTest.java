@@ -97,4 +97,20 @@ public class JamodConverterTest {
         Register[] registers = JamodConverter.toRegisterArray(bytes);
         assertArrayEquals(bytes, JamodConverter.toByteArray(registers));
     }
+    
+    @Test
+    public void testConvertingFromSingleRegisterToBytes() {
+        byte[] bytes = generateRandomEvenNumberOfBytes(2);
+        assertTrue(bytes.length==2);
+        Register register = JamodConverter.toRegisterArray(bytes)[0];
+        assertArrayEquals(bytes, JamodConverter.toByteArray(register));
+    }
+    
+    @Test
+    public void testConvertingFromSingleInputRegisterToBytes() {
+        byte[] bytes = generateRandomEvenNumberOfBytes(2);
+        assertTrue(bytes.length==2);
+        InputRegister register = JamodConverter.toInputRegisterArray(bytes)[0];
+        assertArrayEquals(bytes, JamodConverter.toByteArray(register));
+    }
 }

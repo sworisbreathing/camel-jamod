@@ -111,19 +111,29 @@ public class JamodConverter {
         }
         return results;
     }
-    
+
     @Converter
     public static String toString(final Register[] registers) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         for (Register register : registers) {
             if (first) {
-                first=false;
-            }else{
+                first = false;
+            } else {
                 sb.append(", ");
             }
             sb.append(String.valueOf(register.getValue()));
         }
         return sb.toString();
+    }
+
+    @Converter
+    public static byte[] toByteArray(final Register register) {
+        return register.toBytes();
+    }
+    
+    @Converter
+    public static byte[] toByteArray(final InputRegister register) {
+        return register.toBytes();
     }
 }
