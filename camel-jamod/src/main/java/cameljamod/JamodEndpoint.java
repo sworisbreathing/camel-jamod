@@ -70,8 +70,18 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
      * @return {@code null}
      * @throws Exception never
      */
-    public Producer createProducer() throws Exception {
-        return null;
+    public ModbusProducer createProducer() throws Exception {
+        String dataType = JamodUriResolver.getDataTypeFromUri(modbusURI);
+        ModbusProducer producer;
+        if ("coils".equalsIgnoreCase(dataType)) {
+            producer = new DiscreteOutputsProducer(this);
+        }else if ("registers".equalsIgnoreCase(dataType)) {
+            producer = new RegistersProducer(this);
+        }else{
+            throw new IllegalArgumentException(MessageFormat.format("Unsupported data type: {0}", dataType));
+        }
+        producer.setReferenceAddress(JamodUriResolver.getReferenceFromUri(modbusURI));
+        return producer;
     }
 
     @Override

@@ -17,19 +17,27 @@ package cameljamod;
 
 import net.wimpi.modbus.msg.WriteMultipleRegistersRequest;
 import net.wimpi.modbus.msg.WriteMultipleRegistersResponse;
+import net.wimpi.modbus.procimg.Register;
 
 /**
  *
  * @author Steven Swor
  */
-public class RegistersProducer extends ModbusProducer<WriteMultipleRegistersRequest, WriteMultipleRegistersResponse> {
+public class RegistersProducer extends ModbusProducer<WriteMultipleRegistersRequest, WriteMultipleRegistersResponse, Register[]> {
 
     public RegistersProducer(JamodEndpoint endpoint) {
         super(endpoint);
     }
 
     @Override
-    protected Class<WriteMultipleRegistersRequest> getRequestTypeClass() {
-        return WriteMultipleRegistersRequest.class;
+    protected Class<Register[]> getDataTypeClass() {
+        return Register[].class;
     }
+
+    @Override
+    protected WriteMultipleRegistersRequest createRequest(Register[] data) {
+        return new WriteMultipleRegistersRequest(getReferenceAddress(), data);
+    }
+    
+    
 }

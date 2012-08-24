@@ -15,8 +15,12 @@
  */
 package cameljamod;
 
+import java.util.Random;
 import net.wimpi.modbus.msg.WriteMultipleRegistersRequest;
+import net.wimpi.modbus.procimg.Register;
+import net.wimpi.modbus.procimg.SimpleRegister;
 import org.apache.camel.impl.DefaultCamelContext;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -27,12 +31,26 @@ import org.junit.Test;
 public class RegistersProducerTest {
 
     /**
-     * Test of getRequestTypeClass method, of class DiscreteOutputsProducer.
+     * Test of getDataTypeClass method, of class DiscreteOutputsProducer.
      */
     @Test
-    public void testGetRequestTypeClass() throws Exception {
+    public void testGetDataTypeClass() throws Exception {
         JamodComponent c = new JamodComponent();
         c.setCamelContext(new DefaultCamelContext());
-        assertEquals(WriteMultipleRegistersRequest.class, new RegistersProducer((JamodEndpoint) c.createEndpoint("jamod:tcp://localhost/discreteOutputs/0")).getRequestTypeClass());
+        assertEquals(Register[].class, new RegistersProducer((JamodEndpoint) c.createEndpoint("jamod:tcp://localhost/discreteOutputs/0")).getDataTypeClass());
+    }
+    
+    @Test
+    public void testCreateRequest() throws Exception {
+        JamodComponent c = new JamodComponent();
+        c.setCamelContext(new DefaultCamelContext());
+        RegistersProducer producer = new RegistersProducer((JamodEndpoint) c.createEndpoint("jamod:tcp://localhost/registers/0"));
+        Random random = new Random();
+        byte[] bytes = new byte[2];
+        random.nextBytes(bytes);
+        Register[] registers = new Register[1];
+        registers[0] = new SimpleRegister(bytes[0], bytes[1]);
+        WriteMultipleRegistersRequest request = producer.createRequest(registers);
+        assertArrayEquals(registers, request.getRegisters());
     }
 }

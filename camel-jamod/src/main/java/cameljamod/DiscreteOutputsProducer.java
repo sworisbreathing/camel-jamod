@@ -17,19 +17,27 @@ package cameljamod;
 
 import net.wimpi.modbus.msg.WriteMultipleCoilsRequest;
 import net.wimpi.modbus.msg.WriteMultipleCoilsResponse;
+import net.wimpi.modbus.util.BitVector;
 
 /**
  *
  * @author Steven Swor
  */
-public class DiscreteOutputsProducer extends ModbusProducer<WriteMultipleCoilsRequest, WriteMultipleCoilsResponse> {
+public class DiscreteOutputsProducer extends ModbusProducer<WriteMultipleCoilsRequest, WriteMultipleCoilsResponse, BitVector> {
 
     public DiscreteOutputsProducer(JamodEndpoint endpoint) {
         super(endpoint);
     }
 
     @Override
-    protected Class<WriteMultipleCoilsRequest> getRequestTypeClass() {
-        return WriteMultipleCoilsRequest.class;
+    protected Class<BitVector> getDataTypeClass() {
+        return BitVector.class;
     }
+
+    @Override
+    protected WriteMultipleCoilsRequest createRequest(BitVector data) {
+        return new WriteMultipleCoilsRequest(getReferenceAddress(), data);
+    }
+    
+    
 }

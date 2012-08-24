@@ -15,12 +15,6 @@
  */
 package cameljamod;
 
-import cameljamod.DiscreteInputsPollingConsumer;
-import cameljamod.JamodComponent;
-import cameljamod.JamodEndpoint;
-import cameljamod.InputRegistersPollingConsumer;
-import cameljamod.DiscreteOutputsPollingConsumer;
-import cameljamod.RegistersPollingConsumer;
 import cameljamod.net.AbstractMasterConnectionWrapper;
 import cameljamod.net.TCPMasterConnectionWrapper;
 import cameljamod.net.UDPMasterConnectionWrapper;
@@ -34,9 +28,9 @@ import org.apache.camel.Processor;
 import org.apache.camel.ResolveEndpointFailedException;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.junit.AfterClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,11 +73,34 @@ public class JamodEndpointTest {
      * Test of createProducer method, of class JamodEndpoint.
      */
     @Test
-    public void testCreateProducer() throws Exception {
+    public void testCreateProducerCoils() throws Exception {
         JamodComponent c = new JamodComponent();
         c.setCamelContext(new DefaultCamelContext());
-        JamodEndpoint endpoint = (JamodEndpoint) c.createEndpoint("jamod:tcp://localhost/coils/0");
-        assertNull(endpoint.createProducer());
+        JamodEndpoint endpoint = (JamodEndpoint) c.createEndpoint("jamod:tcp://localhost/coils/5");
+        ModbusProducer producer = endpoint.createProducer();
+        assertNotNull(producer);
+        assertTrue(producer instanceof DiscreteOutputsProducer);
+        assertEquals(5, producer.getReferenceAddress());
+    }
+    
+    @Test
+    public void testCreateProducerRegisters() throws Exception {
+        JamodComponent c = new JamodComponent();
+        c.setCamelContext(new DefaultCamelContext());
+        JamodEndpoint endpoint = (JamodEndpoint) c.createEndpoint("jamod:tcp://localhost/registers/5");
+        ModbusProducer producer = endpoint.createProducer();
+        assertNotNull(producer);
+        assertTrue(producer instanceof RegistersProducer);
+        assertEquals(5, producer.getReferenceAddress());
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testCreateProducerInvalid() throws Exception {
+        JamodComponent c = new JamodComponent();
+        c.setCamelContext(new DefaultCamelContext());
+        JamodEndpoint endpoint = (JamodEndpoint) c.createEndpoint("jamod:tcp://localhost/discreteInputs/0");
+        endpoint.createProducer();
+        fail("Exception not thrown.");
     }
 
     /**

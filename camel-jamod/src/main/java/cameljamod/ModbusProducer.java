@@ -26,18 +26,41 @@ import org.apache.camel.impl.DefaultProducer;
  *
  * @author Steven Swor
  */
-public abstract class ModbusProducer<RequestType extends ModbusRequest, ResponseType extends ModbusResponse> extends DefaultProducer {
+public abstract class ModbusProducer<RequestType extends ModbusRequest, ResponseType extends ModbusResponse, DataType> extends DefaultProducer {
 
     private final JamodEndpoint endpoint;
+    /**
+     * The reference address of the first value to write.
+     */
+    private int referenceAddress;
 
     public ModbusProducer(JamodEndpoint endpoint) {
         super(endpoint);
         this.endpoint = endpoint;
     }
 
+    /**
+     * Gets the reference address.
+     *
+     * @return the reference address
+     */
+    public int getReferenceAddress() {
+        return referenceAddress;
+    }
+
+    /**
+     * Sets the reference address.
+     *
+     * @param referenceAddress the reference address
+     */
+    public void setReferenceAddress(int referenceAddress) {
+        this.referenceAddress = referenceAddress;
+    }
+
     @Override
     public void process(Exchange exchange) throws Exception {
-        RequestType request = exchange.getIn().getBody(getRequestTypeClass());
+        DataType data = exchange.getIn().getBody(getDataTypeClass());
+        RequestType request = createRequest(data);
         AbstractMasterConnectionWrapper connectionWrapper = endpoint.getConnection();
         ModbusTransaction transaction = connectionWrapper.createTransaction();
         transaction.setRequest(request);
@@ -46,5 +69,7 @@ public abstract class ModbusProducer<RequestType extends ModbusRequest, Response
         exchange.getOut().setBody(response);
     }
 
-    protected abstract Class<RequestType> getRequestTypeClass();
+    protected abstract Class<DataType> getDataTypeClass();
+
+    protected abstract RequestType createRequest(DataType data);
 }

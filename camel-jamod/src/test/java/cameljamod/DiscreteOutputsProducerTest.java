@@ -15,7 +15,9 @@
  */
 package cameljamod;
 
+import java.util.Random;
 import net.wimpi.modbus.msg.WriteMultipleCoilsRequest;
+import net.wimpi.modbus.util.BitVector;
 import org.apache.camel.impl.DefaultCamelContext;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -30,9 +32,23 @@ public class DiscreteOutputsProducerTest {
      * Test of getRequestTypeClass method, of class DiscreteOutputsProducer.
      */
     @Test
-    public void testGetRequestTypeClass() throws Exception {
+    public void testGetDataTypeClass() throws Exception {
         JamodComponent c = new JamodComponent();
         c.setCamelContext(new DefaultCamelContext());
-        assertEquals(WriteMultipleCoilsRequest.class, new DiscreteOutputsProducer((JamodEndpoint) c.createEndpoint("jamod:tcp://localhost/discreteOutputs/0")).getRequestTypeClass());
+        assertEquals(BitVector.class, new DiscreteOutputsProducer((JamodEndpoint) c.createEndpoint("jamod:tcp://localhost/coils/0")).getDataTypeClass());
+    }
+    
+    @Test
+    public void testCreateRequest() throws Exception {
+        JamodComponent c = new JamodComponent();
+        c.setCamelContext(new DefaultCamelContext());
+        DiscreteOutputsProducer producer = new DiscreteOutputsProducer((JamodEndpoint) c.createEndpoint("jamod:tcp://localhost/coils/0"));
+        Random random = new Random();
+        byte[] bytes = new byte[2];
+        random.nextBytes(bytes);
+        BitVector expected = new BitVector(16);
+        expected.setBytes(bytes);
+        WriteMultipleCoilsRequest request = producer.createRequest(expected);
+        assertEquals(expected, request.getCoils());
     }
 }
