@@ -4,3 +4,5 @@ camel-jamod/nbactions.xml
 
 jamod-osgi/nbactions.xml
 /camel-jamod/eclipse_config/org.eclipse.osgi/.manager/
+/demo/demo-device/target/
+/demo/demo-routes/target/
