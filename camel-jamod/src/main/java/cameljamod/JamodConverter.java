@@ -27,6 +27,7 @@ import org.apache.camel.Converter;
  *
  * @author Steven Swor
  */
+@Converter
 public class JamodConverter {
 
     private JamodConverter() {
@@ -109,5 +110,20 @@ public class JamodConverter {
             System.arraycopy(registerBytes, 0, results, i * 2, 2);
         }
         return results;
+    }
+    
+    @Converter
+    public static String toString(final Register[] registers) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (Register register : registers) {
+            if (first) {
+                first=false;
+            }else{
+                sb.append(", ");
+            }
+            sb.append(String.valueOf(register.getValue()));
+        }
+        return sb.toString();
     }
 }
