@@ -56,6 +56,7 @@ public class App extends javax.swing.JFrame {
         startStopButton = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Modbus Loopback/Echo Application");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         fromLabel.setText("From");
