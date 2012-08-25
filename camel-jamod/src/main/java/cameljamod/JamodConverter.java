@@ -115,7 +115,7 @@ public class JamodConverter {
 
     @Converter
     public static String toString(final InputRegister[] registers) {
-        StringBuilder sb = new StringBuilder(7*registers.length-1);
+        StringBuilder sb = new StringBuilder(7 * registers.length - 1);
         boolean first = true;
         for (InputRegister register : registers) {
             if (first) {
@@ -127,10 +127,10 @@ public class JamodConverter {
         }
         return sb.toString();
     }
-    
+
     @Converter
     public static String toString(final Register[] registers) {
-        StringBuilder sb = new StringBuilder(7*registers.length-1);
+        StringBuilder sb = new StringBuilder(7 * registers.length - 1);
         boolean first = true;
         for (InputRegister register : registers) {
             if (first) {
@@ -147,26 +147,26 @@ public class JamodConverter {
     public static byte[] toByteArray(final Register register) {
         return register.toBytes();
     }
-    
+
     @Converter
     public static byte[] toByteArray(final InputRegister register) {
         return register.toBytes();
     }
-    
+
     @Converter
     public static String toString(final Register register) {
         StringBuilder sb = new StringBuilder(6);
         appendRegisterToString(register, sb);
         return sb.toString();
     }
-    
+
     @Converter
     public static String toString(final InputRegister register) {
         StringBuilder sb = new StringBuilder(6);
         appendRegisterToString(register, sb);
         return sb.toString();
     }
-    
+
     private static void appendRegisterToString(final InputRegister register, final StringBuilder sb) {
         sb.append("0x");
         Formatter formatter = new Formatter(sb);
@@ -174,11 +174,41 @@ public class JamodConverter {
         formatter.format("%02X", bytes[0]);
         formatter.format("%02X", bytes[1]);
     }
-    
+
     @Converter
     public static BitVector toBitVector(final InputRegister register) {
         BitVector results = new BitVector(16);
         results.setBytes(register.toBytes());
         return results;
+    }
+
+    @Converter
+    public static Register[] toRegisterArray(final BitVector bitVector) {
+        int byteSize = bitVector.byteSize();
+        byte[] bytes = bitVector.getBytes();
+        if (byteSize % 2 == 1) {
+            byteSize++;
+        }
+        Register[] results = new Register[byteSize / 2];
+        for (int i = 0; i < byteSize; i += 2) {
+            if (i < bytes.length-1) {
+                results[i / 2] = new SimpleRegister(bytes[i], bytes[i + 1]);
+            } else {
+                results[i / 2] = new SimpleRegister(bytes[i], (byte) 0);
+            }
+        }
+        return results;
+    }
+
+    @Converter
+    public static Register toRegister(final BitVector bitVector) {
+        byte[] bytes = bitVector.getBytes();
+        if (bytes.length == 0) {
+            return new SimpleRegister();
+        } else if (bytes.length > 1) {
+            return new SimpleRegister(bytes[0], bytes[1]);
+        } else {
+            return new SimpleRegister(bytes[0], (byte) 0);
+        }
     }
 }
