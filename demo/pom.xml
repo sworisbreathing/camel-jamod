@@ -39,5 +39,6 @@
     <modules>
         <module>demo-device</module>
         <module>demo-routes</module>
-    </modules>
+    <module>demo-echo</module>
+  </modules>
 </project>
