@@ -174,4 +174,11 @@ public class JamodConverter {
         formatter.format("%02X", bytes[0]);
         formatter.format("%02X", bytes[1]);
     }
+    
+    @Converter
+    public static BitVector toBitVector(final InputRegister register) {
+        BitVector results = new BitVector(16);
+        results.setBytes(register.toBytes());
+        return results;
+    }
 }
