@@ -55,7 +55,6 @@ public class DigitalInputPanel extends javax.swing.JPanel implements DigitalIn{
         statusCheckBox = new javax.swing.JCheckBox();
 
         statusCheckBox.setText("referenceAddress");
-        statusCheckBox.setEnabled(false);
         add(statusCheckBox);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

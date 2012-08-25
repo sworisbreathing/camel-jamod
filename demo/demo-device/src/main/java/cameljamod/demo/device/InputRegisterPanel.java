@@ -71,11 +71,9 @@ public class InputRegisterPanel extends javax.swing.JPanel implements InputRegis
         valueSpinner = new javax.swing.JSpinner();
 
         referenceAddressLabel.setText("referenceAddress");
-        referenceAddressLabel.setEnabled(false);
         add(referenceAddressLabel);
 
         valueSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), null, Integer.valueOf(65535), Integer.valueOf(1)));
-        valueSpinner.setEnabled(false);
         add(valueSpinner);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

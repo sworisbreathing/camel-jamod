@@ -19,7 +19,6 @@
     <Component class="javax.swing.JCheckBox" name="statusCheckBox">
       <Properties>
         <Property name="text" type="java.lang.String" value="referenceAddress"/>
-        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
   </SubComponents>
