@@ -15,10 +15,16 @@
  */
 package cameljamod.demo.device;
 
+import java.text.ParseException;
+import java.util.Formatter;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFormattedTextField.AbstractFormatter;
+import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.DefaultFormatter;
 import net.wimpi.modbus.procimg.Register;
 import net.wimpi.modbus.procimg.SimpleRegister;
 
@@ -43,6 +49,8 @@ public class RegisterPanel extends javax.swing.JPanel implements Register {
                 valueHolder.setValue(((Integer) valueSpinner.getValue()).intValue());
             }
         });
+        JFormattedTextField tf = ((JSpinner.DefaultEditor) valueSpinner.getEditor()).getTextField();
+        tf.setFormatterFactory(HexWordFormatterFactory.getInstance());
         setReferenceAddress(referenceAddress);
     }
 
@@ -70,7 +78,7 @@ public class RegisterPanel extends javax.swing.JPanel implements Register {
         referenceAddressLabel.setText("referenceAddress");
         add(referenceAddressLabel);
 
-        valueSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), null, Integer.valueOf(65535), Integer.valueOf(1)));
+        valueSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 65535, 1));
         add(valueSpinner);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -15,6 +15,8 @@
  */
 package cameljamod.demo.device;
 
+import javax.swing.JFormattedTextField;
+import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -42,6 +44,8 @@ public class InputRegisterPanel extends javax.swing.JPanel implements InputRegis
                 valueHolder.setValue(((Integer) valueSpinner.getValue()).intValue());
             }
         });
+        JFormattedTextField tf = ((JSpinner.DefaultEditor) valueSpinner.getEditor()).getTextField();
+        tf.setFormatterFactory(HexWordFormatterFactory.getInstance());
         setReferenceAddress(referenceAddress);
     }
 
