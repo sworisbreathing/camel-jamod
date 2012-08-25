@@ -26,7 +26,10 @@ import java.util.Map;
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.net.TCPMasterConnection;
 import net.wimpi.modbus.net.UDPMasterConnection;
-import org.apache.camel.*;
+import org.apache.camel.Consumer;
+import org.apache.camel.Processor;
+import org.apache.camel.ResolveEndpointFailedException;
+import org.apache.camel.RuntimeCamelException;
 import org.apache.camel.impl.DefaultPollingEndpoint;
 
 /**
