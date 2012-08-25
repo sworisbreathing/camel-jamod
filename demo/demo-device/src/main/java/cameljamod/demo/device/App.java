@@ -39,7 +39,7 @@ public class App extends javax.swing.JFrame {
         spi = new SimpleProcessImage();
         modbusListener = new ModbusTCPListener(1 + Runtime.getRuntime().availableProcessors());
         initComponents();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 16; i++) {
             DigitalInputPanel digitalIn = new DigitalInputPanel(i, false);
             digitalInputsPanel.add(digitalIn);
             spi.addDigitalIn(digitalIn);
