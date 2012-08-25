@@ -16,6 +16,7 @@
 package cameljamod;
 
 import java.util.Arrays;
+import java.util.Formatter;
 import net.wimpi.modbus.procimg.InputRegister;
 import net.wimpi.modbus.procimg.Register;
 import net.wimpi.modbus.procimg.SimpleInputRegister;
@@ -113,16 +114,31 @@ public class JamodConverter {
     }
 
     @Converter
-    public static String toString(final Register[] registers) {
-        StringBuilder sb = new StringBuilder();
+    public static String toString(final InputRegister[] registers) {
+        StringBuilder sb = new StringBuilder(7*registers.length-1);
         boolean first = true;
-        for (Register register : registers) {
+        for (InputRegister register : registers) {
             if (first) {
                 first = false;
             } else {
-                sb.append(", ");
+                sb.append(" ");
             }
-            sb.append(String.valueOf(register.getValue()));
+            appendRegisterToString(register, sb);
+        }
+        return sb.toString();
+    }
+    
+    @Converter
+    public static String toString(final Register[] registers) {
+        StringBuilder sb = new StringBuilder(7*registers.length-1);
+        boolean first = true;
+        for (InputRegister register : registers) {
+            if (first) {
+                first = false;
+            } else {
+                sb.append(" ");
+            }
+            appendRegisterToString(register, sb);
         }
         return sb.toString();
     }
@@ -135,5 +151,27 @@ public class JamodConverter {
     @Converter
     public static byte[] toByteArray(final InputRegister register) {
         return register.toBytes();
+    }
+    
+    @Converter
+    public static String toString(final Register register) {
+        StringBuilder sb = new StringBuilder(6);
+        appendRegisterToString(register, sb);
+        return sb.toString();
+    }
+    
+    @Converter
+    public static String toString(final InputRegister register) {
+        StringBuilder sb = new StringBuilder(6);
+        appendRegisterToString(register, sb);
+        return sb.toString();
+    }
+    
+    private static void appendRegisterToString(final InputRegister register, final StringBuilder sb) {
+        sb.append("0x");
+        Formatter formatter = new Formatter(sb);
+        byte[] bytes = register.toBytes();
+        formatter.format("%02X", bytes[0]);
+        formatter.format("%02X", bytes[1]);
     }
 }
