@@ -67,6 +67,7 @@ public class LoggingRouteDemo extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         loggingTextArea.setColumns(20);
+        loggingTextArea.setFont(new java.awt.Font("Courier", 0, 13)); // NOI18N
         loggingTextArea.setRows(5);
         loggingScrollPane.setViewportView(loggingTextArea);
 
