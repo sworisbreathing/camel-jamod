@@ -42,6 +42,7 @@ public class JTextAreaAppender extends AppenderBase<ILoggingEvent> {
         if (ta != null && eventObject != null) {
             ta.append(eventObject.getFormattedMessage());
             ta.append("\n");
+            ta.setCaretPosition(ta.getDocument().getLength());
         }
     }
 
