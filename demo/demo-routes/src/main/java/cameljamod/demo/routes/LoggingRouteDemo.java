@@ -65,8 +65,10 @@ public class LoggingRouteDemo extends javax.swing.JFrame {
         startStopButton = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Modbus Device Logging");
 
         loggingTextArea.setColumns(20);
+        loggingTextArea.setEditable(false);
         loggingTextArea.setFont(new java.awt.Font("Courier", 0, 13)); // NOI18N
         loggingTextArea.setRows(5);
         loggingScrollPane.setViewportView(loggingTextArea);
