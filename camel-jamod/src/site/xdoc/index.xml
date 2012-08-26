@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+              
+    <body>
+        <section name="About Jamod Camel Component" id="About_Jamod_Camel_Component">
+            <p>
+                The Jamod Camel Component aims to provide a Camel component for
+                defining endpoints to Modbus devices through the use of Jamod, a 100%
+                Java library implementation of the Modbus protocol.
+            </p>
+            <p>
+                A 5-minute demo video is available at
+                <a href="http://www.youtube.com/watch?v=_ArfmcNujks" target="_blank">http://www.youtube.com/watch?v=_ArfmcNujks</a>
+            </p>
+        </section>
+    </body>
+</document>
