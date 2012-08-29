@@ -15,16 +15,15 @@
  */
 package cameljamod;
 
-import cameljamod.JamodComponent;
-import cameljamod.JamodEndpoint;
-import cameljamod.DiscreteOutputsPollingConsumer;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import net.wimpi.modbus.msg.ReadCoilsRequest;
 import net.wimpi.modbus.msg.ReadCoilsResponse;
 import net.wimpi.modbus.util.BitVector;
+import org.apache.camel.CamelContext;
 import org.apache.camel.Processor;
+import org.apache.camel.impl.DefaultCamelContext;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -47,11 +46,14 @@ public class DiscreteOutputsPollingConsumerTest {
      */
     @BeforeClass
     public static void setUpClass() throws Exception {
+        CamelContext context = new DefaultCamelContext();
         JamodComponent component = new JamodComponent();
+        component.setCamelContext(context);
         URI modbusUri = new URI("tcp://localhost:1024/discreteOutputs/2");
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("count", Integer.valueOf(8));
         JamodEndpoint endpoint = new JamodEndpoint(component, modbusUri, parameters);
+        endpoint.setCamelContext(context);
         Processor processor = new NoopProcessor();
         instance = new DiscreteOutputsPollingConsumer(endpoint, processor);
         instance.setCount(8);

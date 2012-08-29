@@ -15,9 +15,6 @@
  */
 package cameljamod;
 
-import cameljamod.JamodComponent;
-import cameljamod.InputRegistersPollingConsumer;
-import cameljamod.JamodEndpoint;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +22,9 @@ import net.wimpi.modbus.msg.ReadInputRegistersRequest;
 import net.wimpi.modbus.msg.ReadInputRegistersResponse;
 import net.wimpi.modbus.procimg.InputRegister;
 import net.wimpi.modbus.procimg.SimpleInputRegister;
+import org.apache.camel.CamelContext;
 import org.apache.camel.Processor;
+import org.apache.camel.impl.DefaultCamelContext;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -48,11 +47,14 @@ public class InputRegistersPollingConsumerTest {
      */
     @BeforeClass
     public static void setUpClass() throws Exception {
+        CamelContext context = new DefaultCamelContext();
         JamodComponent component = new JamodComponent();
+        component.setCamelContext(context);
         URI modbusUri = new URI("tcp://localhost:1024/registers/2");
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("count", Integer.valueOf(1));
         JamodEndpoint endpoint = new JamodEndpoint(component, modbusUri, parameters);
+        endpoint.setCamelContext(context);
         Processor processor = new NoopProcessor();
         instance = new InputRegistersPollingConsumer(endpoint, processor);
         instance.setCount(1);

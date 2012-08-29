@@ -15,7 +15,8 @@
  */
 package cameljamod;
 
-import cameljamod.ModbusPollingConsumer;
+import java.net.URI;
+import java.util.Collections;
 import java.util.Random;
 import net.wimpi.modbus.msg.ModbusRequest;
 import net.wimpi.modbus.msg.ModbusResponse;
@@ -24,6 +25,9 @@ import net.wimpi.modbus.procimg.Register;
 import net.wimpi.modbus.procimg.SimpleInputRegister;
 import net.wimpi.modbus.procimg.SimpleRegister;
 import net.wimpi.modbus.util.BitVector;
+import org.apache.camel.CamelContext;
+import org.apache.camel.Processor;
+import org.apache.camel.impl.DefaultCamelContext;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -36,6 +40,8 @@ import org.junit.Test;
 public class ModbusPollingConsumerTest {
 
     private static Random random = null;
+    private static JamodEndpoint endpoint = null;
+    private static Processor processor = null;
 
     public ModbusPollingConsumerTest() {
     }
@@ -43,11 +49,18 @@ public class ModbusPollingConsumerTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         random = new Random();
+        CamelContext context = new DefaultCamelContext();
+        JamodComponent component = new JamodComponent();
+        component.setCamelContext(context);
+        endpoint = new JamodEndpoint(component, new URI("tcp://localhost/discreteInputs/0"), Collections.EMPTY_MAP);
+        endpoint.setCamelContext(context);
+        processor = new NoopProcessor();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
         random = null;
+        endpoint = null;
     }
 
     /**
@@ -56,7 +69,7 @@ public class ModbusPollingConsumerTest {
      */
     @Test
     public void testGetCountAndSetCount() {
-        ModbusPollingConsumer consumer = new ModbusPollingConsumerImpl();
+        ModbusPollingConsumer consumer = new ModbusPollingConsumerImpl(endpoint, processor);
         int expected;
         do {
             expected = random.nextInt();
@@ -71,7 +84,7 @@ public class ModbusPollingConsumerTest {
      */
     @Test
     public void testGetReferenceAddressAndSetReferenceAddress() {
-        ModbusPollingConsumer consumer = new ModbusPollingConsumerImpl();
+        ModbusPollingConsumer consumer = new ModbusPollingConsumerImpl(endpoint, processor);
         int expected;
         do {
             expected = random.nextInt();
@@ -86,7 +99,7 @@ public class ModbusPollingConsumerTest {
      */
     @Test
     public void testIsChangesOnlyAndSetChangesOnly() {
-        ModbusPollingConsumer consumer = new ModbusPollingConsumerImpl();
+        ModbusPollingConsumer consumer = new ModbusPollingConsumerImpl(endpoint, processor);
         boolean expected = !consumer.isChangesOnly();
         consumer.setChangesOnly(expected);
         assertEquals(expected, consumer.isChangesOnly());
@@ -99,7 +112,7 @@ public class ModbusPollingConsumerTest {
      */
     @Test
     public void testValueHasChanged_BitVector_BitVector() {
-        ModbusPollingConsumer consumer = new ModbusPollingConsumerImpl();
+        ModbusPollingConsumer consumer = new ModbusPollingConsumerImpl(endpoint, processor);
         BitVector firstBits = new BitVector(1);
         BitVector secondBits = new BitVector(2);
         BitVector thirdBits = new BitVector(1);
@@ -120,7 +133,7 @@ public class ModbusPollingConsumerTest {
      */
     @Test
     public void testValueHasChanged_InputRegisterArr_InputRegisterArr() {
-        ModbusPollingConsumer consumer = new ModbusPollingConsumerImpl();
+        ModbusPollingConsumer consumer = new ModbusPollingConsumerImpl(endpoint, processor);
         byte[] firstBytes = new byte[2];
         byte[] secondBytes = new byte[2];
         byte[] thirdBytes = new byte[2];
@@ -143,7 +156,7 @@ public class ModbusPollingConsumerTest {
      */
     @Test
     public void testValueHasChanged_RegisterArr_RegisterArr() {
-        ModbusPollingConsumer consumer = new ModbusPollingConsumerImpl();
+        ModbusPollingConsumer consumer = new ModbusPollingConsumerImpl(endpoint, processor);
         byte[] firstBytes = new byte[2];
         byte[] secondBytes = new byte[2];
         byte[] thirdBytes = new byte[2];
@@ -163,8 +176,8 @@ public class ModbusPollingConsumerTest {
 
     public class ModbusPollingConsumerImpl extends ModbusPollingConsumer<ModbusRequest, ModbusResponse, Object> {
 
-        public ModbusPollingConsumerImpl() {
-            super(null, null);
+        public ModbusPollingConsumerImpl(final JamodEndpoint endpoint, final Processor processor) {
+            super(endpoint, processor);
         }
 
         public boolean valueHasChanged(Object oldValue, Object newValue) {

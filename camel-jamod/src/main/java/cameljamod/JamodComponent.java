@@ -42,6 +42,7 @@ public class JamodComponent extends DefaultComponent{
 
         URI endpointUri = URISupport.createRemainingURI(new URI(addressUri), CastUtils.cast(jamodParameters));
         JamodEndpoint endpoint = new JamodEndpoint(this, endpointUri, jamodParameters);
+        endpoint.setCamelContext(getCamelContext());
         return endpoint;
     }
 
