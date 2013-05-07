@@ -40,6 +40,11 @@ import org.apache.camel.impl.DefaultPollingEndpoint;
 public class JamodEndpoint extends DefaultPollingEndpoint {
 
     /**
+	 * Modbus Slave ID constant
+	 */
+    private static final String SLAVE_ID = "slaveId";
+
+    /**
      * The connection.
      */
     private volatile AbstractMasterConnectionWrapper conn;
@@ -84,6 +89,8 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
             throw new IllegalArgumentException(MessageFormat.format("Unsupported data type: {0}", dataType));
         }
         producer.setReferenceAddress(JamodUriResolver.getReferenceFromUri(modbusURI));
+        int slaveId = component.getAndRemoveParameter(parameters, SLAVE_ID, Integer.class, 0);
+        producer.setSlaveId(slaveId);
         return producer;
     }
 
@@ -115,6 +122,8 @@ public class JamodEndpoint extends DefaultPollingEndpoint {
         consumer.setCount(count);
         boolean changesOnly = component.getAndRemoveParameter(parameters, "changesOnly", Boolean.class, Boolean.FALSE);
         consumer.setChangesOnly(changesOnly);
+        int slaveId = component.getAndRemoveParameter(parameters, SLAVE_ID, Integer.class, 0);
+        consumer.setSlaveId(slaveId);
         return consumer;
     }
 
