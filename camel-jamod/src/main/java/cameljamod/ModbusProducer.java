@@ -33,6 +33,11 @@ public abstract class ModbusProducer<RequestType extends ModbusRequest, Response
      * The reference address of the first value to write.
      */
     private int referenceAddress;
+    
+    /**
+     * The Modbus Slave ID
+     */
+    private int slaveId = 0;
 
     public ModbusProducer(JamodEndpoint endpoint) {
         super(endpoint);
@@ -57,10 +62,29 @@ public abstract class ModbusProducer<RequestType extends ModbusRequest, Response
         this.referenceAddress = referenceAddress;
     }
 
+    /**
+     * Gets the Modbus Slave ID.
+     *
+     * @return the Slave ID
+     */
+    public int getSlaveId() {
+		return slaveId;
+	}
+
+    /**
+     * Sets the Modbus Slave ID.
+     *
+     * @param slaveId the Slave ID
+     */
+	public void setSlaveId(int slaveId) {
+		this.slaveId = slaveId;
+	}    
+
     @Override
     public void process(Exchange exchange) throws Exception {
         DataType data = exchange.getIn().getBody(getDataTypeClass());
         RequestType request = createRequest(data);
+        request.setUnitID(slaveId);
         AbstractMasterConnectionWrapper connectionWrapper = endpoint.getConnection();
         ModbusTransaction transaction = connectionWrapper.createTransaction();
         transaction.setRequest(request);

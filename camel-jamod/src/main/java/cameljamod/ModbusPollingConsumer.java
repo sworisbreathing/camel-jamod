@@ -59,6 +59,11 @@ public abstract class ModbusPollingConsumer<RequestType extends ModbusRequest, R
      * The last polled value.
      */
     private BodyType lastPolledValue;
+        
+    /**
+     * The Modbus Slave ID
+     */
+    private int slaveId = 0;
 
     /**
      * Creates a new ModbusPollingConsumer.
@@ -127,6 +132,24 @@ public abstract class ModbusPollingConsumer<RequestType extends ModbusRequest, R
     public void setChangesOnly(boolean changesOnly) {
         this.changesOnly = changesOnly;
     }
+    
+    /**
+     * Gets the Modbus Slave ID.
+     *
+     * @return the Slave ID
+     */
+    public int getSlaveId() {
+		return slaveId;
+	}
+
+    /**
+     * Sets the Modbus Slave ID.
+     *
+     * @param slaveId the Slave ID
+     */
+	public void setSlaveId(int slaveId) {
+		this.slaveId = slaveId;
+	}
 
     @Override
     protected int poll() throws Exception {
@@ -134,6 +157,7 @@ public abstract class ModbusPollingConsumer<RequestType extends ModbusRequest, R
         AbstractMasterConnectionWrapper connectionWrapper = endpoint.getConnection();
         //create a transaction and execute
         RequestType request = createRequest();
+        request.setUnitID(slaveId);
         ModbusTransaction transaction = connectionWrapper.createTransaction();
         transaction.setRequest(request);
         transaction.execute();
