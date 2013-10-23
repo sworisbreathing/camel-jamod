@@ -15,17 +15,17 @@
  */
 package cameljamod;
 
-import cameljamod.JamodComponent;
 import net.wimpi.modbus.net.ModbusTCPListener;
 import net.wimpi.modbus.procimg.SimpleProcessImage;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.test.CamelTestSupport;
+import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Unit tests for {@link JamodComponent}.
+ *
  * @author Steven Swor
  */
 @Ignore
@@ -38,6 +38,7 @@ public class JamodComponentTest extends CamelTestSupport {
 
     /**
      * Gets the port.
+     *
      * @return the port
      */
     protected static String getPort() {
@@ -57,7 +58,7 @@ public class JamodComponentTest extends CamelTestSupport {
     }
 
     @Override
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
 //        spi = new SimpleProcessImage();
 //        spi.addDigitalIn(new SimpleDigitalIn(true));
 //        ModbusCoupler.getReference().setProcessImage(spi);
@@ -70,13 +71,14 @@ public class JamodComponentTest extends CamelTestSupport {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
 //        listener.stop();
     }
 
     /**
      * Lazy-initializes the Jamod component.
+     *
      * @return the Jamod component
      */
     protected JamodComponent getInstance() {
@@ -108,9 +110,10 @@ public class JamodComponentTest extends CamelTestSupport {
             }
         };
     }
-    
+
     /**
      * Tests the component.
+     *
      * @throws Exception if the test fails
      */
     @Test

@@ -16,6 +16,12 @@
             <layout>default</layout>
             <name>Repository for library Library[swing-layout]</name>
         </repository>
+        <!-- for netbeans nodes api -->
+        <repository>
+            <id>netbeans</id>
+            <name>NetBeans</name>
+            <url>http://bits.netbeans.org/maven2/</url>
+        </repository>
     </repositories>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,6 +51,17 @@
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-nodes</artifactId>
+            <version>RELEASE74</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-properties</artifactId>
+            <version>RELEASE74</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 </project>
