@@ -40,9 +40,9 @@ import org.apache.camel.impl.DefaultPollingEndpoint;
 public class JamodEndpoint extends DefaultPollingEndpoint {
 
     /**
-	 * Modbus Slave ID constant
-	 */
-    private static final String SLAVE_ID = "slaveId";
+     * Modbus Slave ID constant
+     */
+    public static final String SLAVE_ID = "slaveId";
 
     /**
      * The connection.

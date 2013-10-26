@@ -15,13 +15,31 @@
  */
 package cameljamod.demo.routes;
 
+import cameljamod.JamodComponent;
 import ch.qos.logback.classic.Logger;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import org.apache.camel.Component;
+import org.apache.camel.ComponentConfiguration;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.impl.ParameterConfiguration;
+import org.openide.explorer.propertysheet.PropertyPanel;
+import org.openide.explorer.propertysheet.PropertySheet;
+import org.openide.explorer.propertysheet.PropertySheetView;
+import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
+import org.openide.nodes.Node;
+import org.openide.nodes.PropertySupport;
+import org.openide.nodes.Sheet;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -29,24 +47,44 @@ import org.slf4j.LoggerFactory;
  * @author Steven Swor
  */
 public class LoggingRouteDemo extends javax.swing.JFrame {
-    
+
     private static final Logger logger = (Logger) LoggerFactory.getLogger(LoggingRouteDemo.class);
 
     private final DefaultCamelContext camelContext;
     private RouteBuilder routeBuilder = null;
+
+    private Preferences prefs = Preferences.userNodeForPackage(LoggingRouteDemo.class);
 
     /**
      * Creates new form LoggingRouteDemo
      */
     public LoggingRouteDemo() {
         camelContext = new DefaultCamelContext();
+        configNode = new ConfigNode();
+        configNode.createSheet();
         initComponents();
+        propertySheetView = getPropertySheetView();
+        configPanel.add(propertySheetView);
         JTextAreaAppender appender = new JTextAreaAppender();
         appender.setTextArea(loggingTextArea);
         appender.setContext(logger.getLoggerContext());
         appender.start();
-        ((Logger)LoggerFactory.getLogger("loggingRoute")).addAppender(appender);
+        ((Logger) LoggerFactory.getLogger("loggingRoute")).addAppender(appender);
+
+        camelUriTextField.setText(prefs.get(ROUTE_DEMO_URI_KEY, "jamod:tcp://localhost:1024/coils/0?count=8&changesOnly=true"));
+        configNode.touchSheet(camelUriTextField.getText());
     }
+    private PropertySheet propertySheetView;
+    public static final String ROUTE_DEMO_KEY = "ROUTE_DEMO_";
+    public static final String ROUTE_DEMO_URI_KEY = ROUTE_DEMO_KEY + "uri";
+
+    private PropertySheet getPropertySheetView() {
+        final PropertySheet propertySheet = new PropertySheet();
+        propertySheet.setNodes(new Node[]{configNode});
+
+        return propertySheet;
+    }
+    private final ConfigNode configNode;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -57,29 +95,29 @@ public class LoggingRouteDemo extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        configPanel = new javax.swing.JPanel();
         loggingScrollPane = new javax.swing.JScrollPane();
         loggingTextArea = new javax.swing.JTextArea();
-        settingsPanel = new javax.swing.JPanel();
-        camelUriLabel = new javax.swing.JLabel();
-        camelUriTextField = new javax.swing.JTextField();
         startStopButton = new javax.swing.JToggleButton();
+        camelUriTextField = new javax.swing.JTextField();
+        camelUriLabel = new javax.swing.JLabel();
+        refreshConfigButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Modbus Device Logging");
+        setMinimumSize(new java.awt.Dimension(640, 480));
 
-        loggingTextArea.setColumns(20);
+        configPanel.setLayout(new java.awt.BorderLayout());
+        jTabbedPane1.addTab("Configuration", configPanel);
+
         loggingTextArea.setEditable(false);
+        loggingTextArea.setColumns(20);
         loggingTextArea.setFont(new java.awt.Font("Courier", 0, 13)); // NOI18N
         loggingTextArea.setRows(5);
         loggingScrollPane.setViewportView(loggingTextArea);
 
-        getContentPane().add(loggingScrollPane, java.awt.BorderLayout.CENTER);
-
-        camelUriLabel.setText("Camel Uri");
-        settingsPanel.add(camelUriLabel);
-
-        camelUriTextField.setText("jamod:tcp://localhost:1024/coils/0?count=8&changesOnly=true");
-        settingsPanel.add(camelUriTextField);
+        jTabbedPane1.addTab("Output", loggingScrollPane);
 
         startStopButton.setText("Start");
         startStopButton.addItemListener(new java.awt.event.ItemListener() {
@@ -87,9 +125,54 @@ public class LoggingRouteDemo extends javax.swing.JFrame {
                 startStopButtonItemStateChanged(evt);
             }
         });
-        settingsPanel.add(startStopButton);
 
-        getContentPane().add(settingsPanel, java.awt.BorderLayout.NORTH);
+        camelUriTextField.setText("jamod:tcp://localhost:1024/coils/0?count=8&changesOnly=true");
+        camelUriTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                camelUriTextFieldActionPerformed(evt);
+            }
+        });
+
+        camelUriLabel.setText("Camel Uri");
+
+        refreshConfigButton.setText("Refresh Config");
+        refreshConfigButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshConfigButtonActionPerformed(evt);
+            }
+        });
+
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jTabbedPane1)
+                    .add(layout.createSequentialGroup()
+                        .add(camelUriLabel)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(camelUriTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(startStopButton)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(refreshConfigButton)))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(camelUriLabel)
+                    .add(camelUriTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(startStopButton)
+                    .add(refreshConfigButton))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -101,6 +184,14 @@ public class LoggingRouteDemo extends javax.swing.JFrame {
             stopRoute();
         }
     }//GEN-LAST:event_startStopButtonItemStateChanged
+
+    private void camelUriTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_camelUriTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_camelUriTextFieldActionPerformed
+
+    private void refreshConfigButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshConfigButtonActionPerformed
+        configNode.touchSheet(camelUriTextField.getText());
+    }//GEN-LAST:event_refreshConfigButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -141,16 +232,21 @@ public class LoggingRouteDemo extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new LoggingRouteDemo().setVisible(true);
+                final LoggingRouteDemo loggingRouteDemo = new LoggingRouteDemo();
+                //Center this for our sanity...
+                loggingRouteDemo.setLocationRelativeTo(null);
+                loggingRouteDemo.setVisible(true);
             }
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel camelUriLabel;
     private javax.swing.JTextField camelUriTextField;
+    private javax.swing.JPanel configPanel;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JScrollPane loggingScrollPane;
     private javax.swing.JTextArea loggingTextArea;
-    private javax.swing.JPanel settingsPanel;
+    private javax.swing.JButton refreshConfigButton;
     private javax.swing.JToggleButton startStopButton;
     // End of variables declaration//GEN-END:variables
 
@@ -178,6 +274,8 @@ public class LoggingRouteDemo extends javax.swing.JFrame {
                 routeBuilder.addRoutesToCamelContext(camelContext);
                 camelContext.startRoute("loggingRoute");
                 LoggerFactory.getLogger(LoggingRouteDemo.class).info("Route started");
+                prefs.put(ROUTE_DEMO_URI_KEY, modbusUri);
+                prefs.flush();
                 return null;
             }
 
@@ -187,6 +285,9 @@ public class LoggingRouteDemo extends javax.swing.JFrame {
                     get();
                     settingsEnable(false);
                     startStopButton.setText("Stop");
+                    jTabbedPane1.setSelectedComponent(loggingScrollPane);
+                    configNode.setReadOnly(true);
+                    refreshConfigButton.setEnabled(false);
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 } catch (ExecutionException ex) {
@@ -217,6 +318,8 @@ public class LoggingRouteDemo extends javax.swing.JFrame {
                 settingsEnable(true);
                 startStopButton.setText("Start");
                 startStopButton.setSelected(false);
+                configNode.setReadOnly(false);
+                refreshConfigButton.setEnabled(true);
                 try {
                     get();
                 } catch (InterruptedException ex) {
@@ -226,5 +329,76 @@ public class LoggingRouteDemo extends javax.swing.JFrame {
                 }
             }
         }.execute();
+    }
+
+    private class ConfigNode extends AbstractNode {
+
+        Component camelComponent;
+        ComponentConfiguration componentConfiguration;
+
+        boolean readOnly = false;
+
+        public ConfigNode() {
+            super(Children.LEAF);
+            camelComponent = camelContext.getComponent("jamod");
+            componentConfiguration = camelComponent.createComponentConfiguration();
+        }
+
+        @Override
+        protected Sheet createSheet() {
+            Sheet retVal = super.createSheet();
+            Sheet.Set dflt = Sheet.createPropertiesSet();
+            dflt.setDisplayName("Default");
+            Map<String, ParameterConfiguration> paramConfigs = componentConfiguration.getParameterConfigurationMap();
+            for (String key : paramConfigs.keySet()) {
+                final ParameterConfiguration paramConfig = paramConfigs.get(key);
+                final String paramName = paramConfig.getName();
+                if (readOnly) {
+                    dflt.put(new PropertySupport.ReadOnly(paramName, paramConfig.getParameterType(), paramName, paramName) {
+
+                        @Override
+                        public Object getValue() throws IllegalAccessException, InvocationTargetException {
+                            return componentConfiguration.getParameter(paramName);
+                        }
+                    });
+                } else {
+                    dflt.put(new PropertySupport.ReadWrite(paramName, paramConfig.getParameterType(), paramName, paramName) {
+
+                        @Override
+                        public Object getValue() throws IllegalAccessException, InvocationTargetException {
+
+                            return componentConfiguration.getParameter(paramName);
+                        }
+
+                        @Override
+                        public void setValue(Object val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+                            componentConfiguration.setParameter(paramName, val);
+                            notifyUpdated();
+                        }
+                    });
+                }
+            }
+            retVal.put(dflt);
+            return retVal;
+        }
+
+        public void notifyUpdated() {
+            camelUriTextField.setText(componentConfiguration.getUriString());
+        }
+
+        //Update the sheet...
+        public void setReadOnly(boolean readOnly) {
+            this.readOnly = readOnly;
+            setSheet(createSheet());
+        }
+
+        public void touchSheet(String uri) {
+            try {
+                componentConfiguration.setUriString(uri);
+                setSheet(createSheet());
+            } catch (URISyntaxException ex) {
+                logger.info("Invalid URI", ex);
+            }
+        }
     }
 }
